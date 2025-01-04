@@ -1,0 +1,118 @@
+<template>
+    <style>
+
+        .w70{
+            width: 70%;
+        }
+        
+        .print{
+            display: none;
+        }
+
+        .big{
+            display: flex;
+            font-size: 2.5em;
+            width: 50px;
+            height: 50px;
+        }
+
+    </style>
+
+    <fieldset class="fds-busca prod">
+        <legend>Busca</legend>
+        <div class="inline">
+            <label for="edtBusca">por:</label>
+            <select id="cmbBusca">
+                <option value="cod_int" signal="IN">Código</option>
+                <option value="descricao" signal="LIKE" selected>Descrição</option>
+                <option value="cod_forn" signal="LIKE">Código Forn.</option>
+                <option value="cod_bar" signal="LIKE" >Código de Barras</option>
+                <option value="consumo" signal="=" val="1">Consumo</option>
+                <option value="estoque" signal="<=" val="estq_min">Estoque Baixo</option>
+                <option value="ramo" signal="LIKE" >Fornecedor</option>
+            </select>
+            <input type="text" id="edtBusca" onkeypress="return getEnter(event, 'btnBusca-prod')">
+            <button id="btnBusca-prod" class="btn-round" ><span class="mdi mdi-magnify"></span></button>
+            <button id="btnNovo" class="btn-round"><span class="mdi mdi-plus-thick"></span></button>            
+        </div>
+        <table id="tblProd"></table>
+        <div class="line print">
+            <button id="btnPrint" class="btn-round big"><span class="mdi mdi-printer-pos"></span></button>
+        </div>        
+    </fieldset>  
+
+</template>
+<script>
+
+    const pageData = main_data.adm_produtos.data
+    const pageFunc = main_data.adm_produtos.func
+    const pageScreen = document.querySelector('#card-adm_produtos')
+
+    pageFunc.fillProd = ()=>{      
+        const tbl = pageScreen.querySelector('#tblProd')
+        tbl.innerHTML = ''
+        const query = getVal('prod')
+        const params = new Object;
+            params.field = query[0]
+            params.signal = query[1]
+            params.value = query[2]
+        const myPromisse = queryDB(params,'PROD-0');
+        myPromisse.then((resolve)=>{
+            const json = JSON.parse(resolve)
+            pageData.produtos = json
+            tbl.style.display = json.length > 0 ? 'inline-table' : 'none'
+            tbl.head('Descrição|w70,Und.,Estq.,Preço')
+            pageScreen.querySelector('.print').style.display = json.length ? 'flex' : 'none'
+            for(let i=0; i<json.length;i++){
+                tbl.plot(json[i],'descricao,und,estoque,preco','str,Upp,flo,R$.')
+            }         
+        })
+    }
+
+    pageScreen.querySelector('#btnBusca-prod').addEventListener('click',()=>{
+        pageFunc.fillProd()
+    })
+
+    pageScreen.querySelector('#btnNovo').addEventListener('click',()=>{
+        openHTML('adm_view_prod.html','pop-up','Cadastro de Produtos')
+    })
+
+    pageScreen.querySelector('#tblProd').addEventListener('click',(e)=>{   
+        const row = e.target.parentNode     
+        if(row.rowIndex > 0 && row.tagName == 'TR'){
+            closeModal('adm_view_prod')
+            openHTML('adm_view_prod.html','pop-up',`Edição de Produtos - ${row.data.descricao.toUpperCase()}`,row.data)
+        }
+    })
+
+    pageScreen.querySelector('#tblProd').addEventListener('contextmenu',(e)=>{
+        e.preventDefault();
+        const row = e.target.parentNode 
+        try{
+            const val = prompt('Quantidade a ser reservada? (qtd,projeto,pago)','0,1')
+            const reserva = parseInt(val.split(',')[0])
+            const proj = val.split(',')[1] == undefined ? 1 : val.split(',')[1].trim()
+            const pago = val.split(',')[2] == undefined ? 0 : val.split(',')[2].trim() == '0' ? 0 : 1
+            if(reserva > 0){
+                const params = new Object;
+                    params.id_prod = row.data.id
+                    params.id_proj = proj
+                    params.id_user = localStorage.getItem('id_user')
+                    params.qtd = reserva
+                    params.pago = pago
+                
+                const myPromisse = queryDB(params,'PROD-3');
+                myPromisse.then((resolve)=>{
+                    pageFunc.fillProd()
+                    setLog(`Produto RESERVADO -> ${row.data.descricao} : ${reserva} ${row.data.und}`)
+                    alert('Produto RESERVADO!')
+                })
+            }
+        }catch{}
+    })    
+
+    pageScreen.querySelector('#btnPrint').addEventListener('click',()=>{
+        produtos_pos(pageData.produtos)
+    })
+
+</script>

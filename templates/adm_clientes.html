@@ -1,0 +1,95 @@
+<template>
+    <style>
+        .resp-busca{
+            width: 100%;
+            max-height: 400px;
+            overflow-y: scroll;
+        }
+
+    </style>
+
+    <fieldset class="fds-busca cliente">
+        <legend>Filtro</legend>
+        <div class="inline">
+            <label for="edtBusca">por:</label>
+            <select id="cmbBusca">
+                <option value="nome" signal="LIKE">Nome</option>
+                <option value="cpf" signal="LIKE" selected>CPF</option>
+                <option value="cel" signal="LIKE" >Celular</option>
+            </select>
+            <input type="text" id="edtBusca" onkeypress="return getEnter(event, 'btnBusca-cli')">
+            <button id="btnBusca-cli" class="btn-round" ><span class="mdi mdi-magnify"></span></button>
+            <button id="btnNovo" class="btn-round"><span class="mdi mdi-plus-thick"></span></button>   
+        </div>
+
+        
+    </fieldset>  
+    <div class="resp-busca">
+        <table id="tblCli"></table>
+    </div>
+</template>
+<script>
+
+    const pageData = main_data.adm_clientes.data
+    const pageFunc = main_data.adm_clientes.func
+    const pageScreen = document.querySelector('#card-adm_clientes')
+
+    pageFunc.fillClient = ()=>{
+        const tbl = pageScreen.querySelector('#tblCli')
+        tbl.innerHTML = ''
+        const query = getVal('cliente')
+        const params = new Object;
+            params.field = query[0]
+            params.signal = query[1]
+            params.value = query[2]
+        const myPromisse = queryDB(params,'CLI-0')
+        myPromisse.then((resolve)=>{
+            const json = JSON.parse(resolve)
+            tbl.style.display = json.length > 0 ? 'inline-table' : 'none'
+            tbl.head('Nome,CPF,Cel')
+            for(let i=0; i<json.length;i++){
+                tbl.plot(json[i],'nome,cpf,cel','Upp,cpf,tel')
+            }         
+        });
+    }
+
+    function callback(data){
+        if(main_data.hasOwnProperty(pageData.org)){
+            main_data[pageData.org].func.buscaCliente(data)
+        }else{
+            console.error('Tela fechada pelo usuário!')
+        }
+        closeModal('adm_clientes')
+    }
+
+    pageFunc.newClient = (data)=>{
+        const ok = Object.keys(data).length
+
+        if(ok && main_data.adm_clientes.data.hasOwnProperty('org')){
+            callback(data)
+        }else{
+            pageFunc.fillClient()
+        }
+    }
+
+    pageScreen.querySelector('#btnBusca-cli').addEventListener('click',()=>{
+        pageFunc.fillClient()
+    })
+
+    pageScreen.querySelector('#tblCli').addEventListener('click',(e)=>{
+        const row = e.target.parentNode
+        if(row.rowIndex > 0 && row.tagName == 'TR'){
+            if(main_data.hasOwnProperty(pageData.org)){
+                callback(row.data)
+            }else{
+                row.data.org = 'busca_cliente'
+                openHTML('adm_view_cli.html','pop-up','Edição de Cliente',row.data,700)
+            }
+        }            
+    })
+
+    pageScreen.querySelector('#btnNovo').addEventListener('click',()=>{
+        openHTML('adm_view_cli.html','pop-up','Novo Cliente')
+    })
+
+</script>
