@@ -1,27 +1,116 @@
 <template>
 
     <style>
-        @import url("style/menu.css");     
-        
-        body{
-/*            background-image: url('assets/wallpapers/wallpaper_03.jpg');
-            background-repeat: no-repeat;
-            background-attachment: fixed;
-            background-size: cover;
-            background-blend-mode: hard-light;
-            background-position: center;
-*/            
-        }        
+        @import url("style/menu.css");                     
 
-        #content-screen{
-            margin-top: 80px;
+        .content-screen{
+/*            margin-top: 80px;*/
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: end;
+
+/*            top: -80px;*/
+            position: absolute;
+
         }
+
 
         #mail-badge-lbl{
             position: absolute;
             top: 15px;
             left: 10px;
         }
+
+/* POSTS */        
+
+    .post{
+        width: calc(100% - 120px);
+        display: flex;
+        gap: 10px;
+        justify-content: center;
+        flex-direction: column;
+        background-color: #f0f8ffd6;
+        margin: 20px;
+        padding: 20px;
+        border-radius: 10px;
+    }
+
+    .post-head, .post-head-left, .post-head-rigth{
+        display: flex;
+        justify-content: space-between;
+        flex-wrap: wrap;
+        gap: 10px;
+    }
+
+    .post-head-img{
+        width: 40px;
+        height: 40px;
+        background-color: #00000059;
+        border-radius: 50%;
+        cursor: pointer;
+    }
+
+    .post-text{
+        text-align: justify;
+    }
+
+    .post-btn{
+        background-color: #000000bd;
+        color: #FFFFFF;
+        padding: 0 12px;
+        border-radius: 20px;
+        display: flex;
+        align-items: center;
+        height: 30px;
+        margin: auto;
+        width: 100px;
+        justify-content: center;
+    }
+
+    .post-btn:hover{
+        cursor: pointer;
+        background-color: #00000087;
+    }
+
+    .btnMore{
+        font-weight: bold;
+        cursor: pointer;
+    }
+
+    .post-time{
+        display: flex;
+        justify-content: end;
+    }
+
+    .post-img{
+        max-width: 100%;
+        border-radius: 15px;
+    }
+
+    .post-social, .post-social  div{
+        display: flex;
+        gap: 10px;
+        padding: 0 10px;
+    }
+
+    .post-social  div:hover{
+        background-color: rgba(0, 0, 0, 0.274);
+        color: #FFFFFF;
+        border-radius: 10px;
+        cursor: pointer;
+    }
+
+    @media all and (max-width : 768px) {
+
+        .content-screen{
+            align-items: center;
+        }
+        .post{
+            width: 90%;
+        }
+    }
 
     </style>
          
@@ -51,7 +140,69 @@
         </div>
     </nav>
 
-    <div id="content-screen"></div>
+    <div id="content-screen" class="content-screen">
+        
+        <div class="post">
+            <div class="post-head">
+                <div class="post-head-left">
+                    <img class="post-head-img" src="assets/users/1/perfil.jpg" alt="">
+                    <div class="post-head-name">Tales C. Dantas</div>
+                </div>
+                <div class="post-head-rigth">
+                    <div class="post-btn">Subscribe</div>
+                    <div class="btnMore">...</div>
+                </div>
+            </div>
+            <div class="post-text">
+                Lorem ipsum dolor sit amet. Id voluptas harum et ullam corrupti et doloremque rerum vel ipsa natus vel adipisci nisi. Et incidunt molestiae et ducimus incidunt in nostrum reiciendis ut veniam quia ea impedit perferendis in facere voluptatem 33 alias eaque. 
+            </div>
+            <div class="post-time">
+                00:00 PM Oct-10,2024 - 200 Views
+            </div>
+            <div class="post-social">
+                <div class="post-social-chat">
+                    <span class="mdi mdi-chat-outline"></span>
+                    <p>50</p>
+                </div>
+                <div class="post-social-like">
+                    <span class="mdi mdi-thumb-up-outline"></span>
+                    <p>15</p>
+                </div>         
+            </div>
+        </div>
+
+        <div class="post">
+            <div class="post-head">
+                <div class="post-head-left">
+                    <img class="post-head-img" src="assets/users/1/perfil.jpg" alt="">
+                    <div class="post-head-name">Tales C. Dantas</div>
+                </div>
+                <div class="post-head-rigth">
+                    <div class="post-btn">Subscribe</div>
+                    <div class="btnMore">...</div>
+                </div>
+            </div>
+            <div class="post-text">
+                Lorem ipsum dolor sit amet. Id voluptas harum et ullam corrupti et doloremque rerum vel ipsa natus vel adipisci nisi. Et incidunt molestiae et ducimus incidunt in nostrum reiciendis ut veniam quia ea impedit perferendis in facere voluptatem 33 alias eaque. 
+            </div>
+                <img class="post-img" src="posts/img1.jpg" alt="">
+            <div class="post-time">
+                00:00 PM Oct-10,2024 - 200 Views
+            </div>
+            <div class="post-social">
+                <div class="post-social-chat">
+                    <span class="mdi mdi-chat-outline"></span>
+                    <p>50</p>
+                </div>
+                <div class="post-social-like">
+                    <span class="mdi mdi-thumb-up-outline"></span>
+                    <p>15</p>
+                </div>
+                            
+            </div>
+        </div>
+        
+    </div>
     
 </template>
 <script>
@@ -79,7 +230,7 @@
     .then((response)=>{
         const json = response.trim() != '' ? JSON.parse(JSON.parse(response)) : new Object
         pageData.wallpaper = new Object
-        pageData.wallpaper.pic = json.hasOwnProperty('pic') ? json.pic : 'assets/wallpapers/wallpaper_05.jpg'
+        pageData.wallpaper.pic = json.hasOwnProperty('pic') ? json.pic : 'assets/wallpapers/wallpaper_01.jpg'
         pageData.wallpaper.efect = json.hasOwnProperty('efect') ? json.efect : 'normal'
         pageData.wallpaper.repeat = json.hasOwnProperty('repeat') ? json.repeat : 'no-repeat'
         pageData.wallpaper.size = json.hasOwnProperty('size') ? json.size : 'cover'

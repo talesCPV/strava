@@ -26,7 +26,8 @@
     }
 
     body {
-        background: #212121;
+        background: #ececec;
+        background-attachment: fixed;
         line-height: 32px;
         margin: 0;
         padding: 0;
