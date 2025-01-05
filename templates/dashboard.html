@@ -132,12 +132,7 @@
             </button>
         </div>
 
-        <div id="logout">
-            <label id="logout_btn" onclick="logout()">
-                <span class="mdi mdi-logout"></span>
-                <span class="item-description">Logout</span>
-            </label>
-        </div>
+        <div id="login"></div>
     </nav>
 
     <div id="content-screen" class="content-screen">
@@ -309,5 +304,19 @@
         const img = document.querySelector('#user_avatar')
         img.src =  imgExist ? `assets/users/${localStorage.getItem('id_user')}/perfil.jpg` : 'assets/icons/user_default.png'
     }) 
+
+    const login = document.querySelector('#login')
+    const label = document.createElement('label')
+    if(localStorage.getItem('hash') != null){
+        label.innerHTML = '<span class="mdi mdi-logout"></span> <span class="item-description">Logout</span>'
+        label.addEventListener('click',()=>{
+        })
+          
+    }else{
+        label.innerHTML = '<span class="mdi mdi-login"></span> <span class="item-description">Logout</span>'
+        label.addEventListener('click',()=>{
+        })     
+    }   
+    login.appendChild(label)
 
 </script>
