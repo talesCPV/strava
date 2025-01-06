@@ -6,21 +6,18 @@
         @import url('https://cdn.jsdelivr.net/npm/@mdi/font@7.4.47/css/materialdesignicons.min.css');
         @import url('https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap');
 
-        body{
-            background-image: url('assets/wallpapers/wallpaper_03.jpg');
-            background-repeat: no-repeat;
-            background-clip: border-box;
-            background-position-x: center ;
-            background-size: auto;
+        .login-icon{
+            font-size: 5em;
+            padding: 10px;
         }
 
         .overlay{
-            position: fixed;
+/*            position: fixed;
             top: 0;
             left: 0;
             width: 100vw;
             height: 100vh;
-/*            background-color: rgba(0, 0, 0, 0.281);*/
+*/            
             display: flex;
             justify-content: center;
             align-items: center;
@@ -31,9 +28,9 @@
             display: flex;
             flex-direction: column;
             gap: 20px;
+/*            
             width: 350px;
             max-width: 90%;
-/*            height: 450px;*/
             color: rgb(0, 0, 0);
             background-color: rgba(252, 254, 255, 0.432);
             border-radius: 20px;
@@ -41,6 +38,7 @@
             backdrop-filter: blur(6px);
             display: flex;
             justify-content: center;
+*/
             align-items: center;
             font-size: .8em;
         }
@@ -91,7 +89,6 @@
 
         input:-webkit-autofill,input:-webkit-autofill:hover,input:-webkit-autofill:focus,input:-webkit-autofill:active {
             transition: background-color 5000s ease-in-out 0s;
-/*            -webkit-text-fill-color: #fff !important;*/
         }
 
         .botton{
@@ -101,7 +98,7 @@
 
         .hide-btn{
             padding: 5px 20px;
-            border: solid 1px unset;
+            border: solid 1px white;
             border-radius: 10px;
             cursor: pointer;
             line-height: initial;
@@ -129,7 +126,7 @@
         <div class="frm">
 <!--            <img src="assets/logo.png" alt="" id="logo"> -->
 <!--            <img src="assets/icons/backhand.png" alt=""> -->
-            <span  class="mdi mdi-cart-check"></span>
+            <span  class="mdi mdi-bike-fast login-icon"></span>
             <div class="frm-input">
                 <span class="mdi mdi-account"></span>
                 <input type="email" id="edtUser" placeholder="Email" onkeyup="validaEmail(this)">
@@ -151,8 +148,7 @@
             <div class="risk"></div>
 
             <div class="botton">
-                <p>PDV 1.0</p>
-                <p>Gerenciador Comercial</p>
+                <p>STRAVA CLONE 1.0</p>
             </div>
 
         </div>

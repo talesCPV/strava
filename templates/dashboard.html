@@ -308,13 +308,17 @@
     const login = document.querySelector('#login')
     const label = document.createElement('label')
     if(localStorage.getItem('hash') != null){
+        label.title = 'Logout'
         label.innerHTML = '<span class="mdi mdi-logout"></span> <span class="item-description">Logout</span>'
         label.addEventListener('click',()=>{
+        
         })
           
     }else{
+        label.title = 'Login'
         label.innerHTML = '<span class="mdi mdi-login"></span> <span class="item-description">Logout</span>'
         label.addEventListener('click',()=>{
+            openHTML('login.html','web-window','Login',{},400)
         })     
     }   
     login.appendChild(label)

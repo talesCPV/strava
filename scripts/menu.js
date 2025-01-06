@@ -36,9 +36,9 @@ function openMenu(){
             const menu = document.querySelector('#side_items')
             menu.innerHTML = ''//usr_menu
             pushMenu(menu, menu_data.itens)
-            checkUserMail()
-            checkUserSchedule()
-            addShortcut()
+//            checkUserMail()
+//            checkUserSchedule()
+//            addShortcut()
             document.querySelector('#user-name').innerHTML = localStorage.getItem('nome')
             document.querySelector('#user-email').innerHTML = localStorage.getItem('email')
         }catch{            

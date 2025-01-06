@@ -75,6 +75,7 @@
     }
 
     function saveMenu(){
+console.log(1)        
         main_data.sys_perm.func.refreshMenu()
         main_data.sys_perm.func.setMenu(JSON.stringify(main_data.sys_perm.data.json))
         closeModal('sys_new_menu')
@@ -150,7 +151,7 @@
             obj.pg = ass
             obj.width = width
             saveMenu()
-            setLog(`Menu Alterado (${modulo}, ${link}, ${janela}, ${label})`)
+//            setLog(`Menu Alterado (${modulo}, ${link}, ${janela}, ${label})`)
         }
     })
 
