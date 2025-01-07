@@ -105,8 +105,6 @@
 
     <div class="overlay">
         <div class="frm">
-<!--            <img src="assets/logo.png" alt="" id="logo"> -->
-<!--            <img src="assets/icons/backhand.png" alt=""> -->
             <span  class="mdi mdi-bike-fast login-icon"></span>
             <div class="frm-input">
                 <span class="mdi mdi-account"></span>
@@ -157,7 +155,6 @@
     })
 
     document.querySelector('#btnLogin').addEventListener('click',()=>{
-alert(1)
         if(checkField(['edtUser','edtPass'])){
             let notfound = true            
             let user = document.querySelector('#edtUser').value
@@ -179,8 +176,6 @@ alert(1)
                         localStorage.setItem("access",json[0].access)
                         localStorage.setItem("nome",json[0].nome)
                         localStorage.setItem("email",json[0].email)
-                        localStorage.setItem("asaas_id",json[0].asaas_id)
-                        localStorage.setItem("expira",json[0].expira.viewDate())
                         openHTML('dashboard.html','main-screen')
                     }
                 }else{

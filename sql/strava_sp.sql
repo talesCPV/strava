@@ -46,15 +46,13 @@ DELIMITER $$
 	CREATE PROCEDURE sp_newUser(
         IN Inome varchar(30),
 		IN Iemail varchar(80),
-		IN Isenha varchar(30),
-        IN Iasaas_id varchar(16)
+		IN Isenha varchar(30)
     )
 	BEGIN
 		SET @has_user = (SELECT COUNT(*) FROM tb_usuario WHERE email COLLATE utf8_general_ci = Iemail COLLATE utf8_general_ci);
 		IF (@has_user = 0)THEN
 			SET @hash = SHA2(CONCAT(Iemail, Isenha), 256);
-			INSERT INTO tb_usuario (nome,email,hash,asaas_id)VALUES(Inome,Iemail,@hash,Iasaas_id);
-			CALL sp_add_credit(Iasaas_id,3,0);
+			INSERT INTO tb_usuario (nome,email,hash)VALUES(Inome,Iemail,@hash);
 			SELECT hash FROM tb_usuario WHERE id= (SELECT MAX(id) FROM tb_usuario);
         ELSE
 			SELECT 0 AS hash;
@@ -75,10 +73,10 @@ DELIMITER ;
  DROP PROCEDURE IF EXISTS sp_confirma_email;
 DELIMITER $$
 	CREATE PROCEDURE sp_confirma_email(
-        IN Iasaas_id varchar(16)
+        IN Ihash varchar(64)
     )
 	BEGIN    
-		UPDATE tb_usuario SET access=1 WHERE asaas_id COLLATE utf8_general_ci = Iasaas_id COLLATE utf8_general_ci;
+		UPDATE tb_usuario SET access=1 WHERE hash COLLATE utf8_general_ci = Ihash COLLATE utf8_general_ci;
 	END $$
 DELIMITER ;
 
@@ -99,12 +97,7 @@ DELIMITER $$
 			IF(Iemail="")THEN
 				SET SQL_SAFE_UPDATES = 0;            
 				DELETE FROM tb_mail WHERE id_from=Iid OR id_to=Iid;
- 				DELETE FROM tb_creditos WHERE id_usuario=Iid;
- 				DELETE FROM tb_clube WHERE id_usuario=Iid;
- 				DELETE FROM tb_aluno WHERE id_usuario=Iid;
- 				DELETE FROM tb_aula WHERE id_usuario=Iid;
- 				DELETE FROM tb_agenda WHERE id_usuario=Iid;
- 				DELETE FROM tb_aula_dada WHERE id_usuario=Iid;
+ 				DELETE FROM tb_calendario WHERE id_user=Iid;
 				DELETE FROM tb_usuario WHERE id=Iid;
             ELSE			
 				IF(Iid=0)THEN
@@ -346,190 +339,3 @@ DELIMITER $$
 DELIMITER ;
 
 /* FIM PADRÂO */
-
-/* TB EMPRESA */
-
- DROP PROCEDURE IF EXISTS sp_view_emp;
-DELIMITER $$
-	CREATE PROCEDURE sp_view_emp(	
-		IN Iallow varchar(80),
-		IN Ihash varchar(64),
-		IN Ifield varchar(30),
-        IN Isignal varchar(4),
-		IN Ivalue varchar(50)
-    )
-	BEGIN    
-		CALL sp_allow(Iallow,Ihash);
-		IF(@allow)THEN
-			SET @quer =CONCAT('SELECT * FROM tb_empresa WHERE ',Ifield,' ',Isignal,' ',Ivalue,' ORDER BY ',Ifield,';');
-			PREPARE stmt1 FROM @quer;
-			EXECUTE stmt1;
-		ELSE 
-			SELECT 0 AS id, "" AS nome;
-        END IF;
-	END $$
-DELIMITER ;
-
- DROP PROCEDURE IF EXISTS sp_set_empresa;
-DELIMITER $$
-	CREATE PROCEDURE sp_set_empresa(	
-		IN Iallow varchar(80),
-		IN Ihash varchar(64),
-        IN Iid int(11),
-        IN Irazao_social varchar(80),
-		IN Ifantasia varchar(40),
-		IN Icnpj varchar(14),
-		IN Iie varchar(14),
-		IN Iim varchar(14),
-		IN Iend varchar(60),
-		IN Inum varchar(6),
-		IN Icomp varchar(50),
-		IN Ibairro varchar(60),
-		IN Icidade varchar(30),
-		IN Iuf varchar(2),
-		IN Icep varchar(10),
-		IN Icliente BOOLEAN,
-		IN Iramo varchar(80),
-		IN Itel varchar(15),
-		IN Iemail varchar(80)
-    )
-	BEGIN    
-		CALL sp_allow(Iallow,Ihash);
-		IF(@allow)THEN
-			IF(Iid=0)THEN
-				INSERT INTO tb_empresa (razao_social,fantasia,cnpj,ie,im,end,num,comp,bairro,cidade,uf,cep,cliente,ramo,tel,email) 
-				VALUES (Irazao_social,Ifantasia,Icnpj,Iie,Iim,Iend,Inum,Icomp,Ibairro,Icidade,Iuf,Icep,Icliente,Iramo,Itel,Iemail);
-			ELSE
-				IF(Irazao_social = "")THEN
-					DELETE FROM tb_empresa WHERE id=Iid;
-				ELSE
-					UPDATE tb_empresa SET razao_social=Irazao_social,fantasia=Ifantasia,cnpj=Icnpj,ie=Iie,im=Iim,end=Iend,num=Inum,
-                    comp=Icomp,bairro=Ibairro,cidade=Icidade,uf=Iuf,cep=Icep,cliente=Icliente,ramo=Iramo,tel=Itel,email=Iemail
-					WHERE id=Iid; 
-				END IF;
-			END IF;
-		END IF;
-	END $$
-DELIMITER ;
-
-/* TB PRODUTO */
-
- DROP PROCEDURE IF EXISTS sp_view_prod;
-DELIMITER $$
-	CREATE PROCEDURE sp_view_prod(	
-		IN Iallow varchar(80),
-		IN Ihash varchar(64),
-		IN Ifield varchar(30),
-        IN Isignal varchar(4),
-		IN Ivalue varchar(50)
-    )
-	BEGIN
-		CALL sp_allow(Iallow,Ihash);
-		IF(@allow)THEN
-			SET @quer =CONCAT('SELECT * FROM vw_prod WHERE ',Ifield,' ',Isignal,' ',Ivalue,' ORDER BY ',Ifield,';');
-			PREPARE stmt1 FROM @quer;
-			EXECUTE stmt1;
-        END IF;
-	END $$
-DELIMITER ; 
-
- DROP PROCEDURE IF EXISTS sp_set_prod;
-DELIMITER $$
-	CREATE PROCEDURE sp_set_prod(	
-		IN Iallow varchar(80),
-		IN Ihash varchar(64),
-        IN Iid int(11),
-		IN Iid_emp int(11),
-		IN Idescricao varchar(80),
-		IN Iestoque double,
-		IN Iestq_min double,
-		IN Iund varchar(10),
-		IN Incm varchar(8),
-		IN Icod_int int(11),
-		IN Icod_bar varchar(15),
-		IN Icod_forn varchar(20),
-		IN Iconsumo BOOLEAN,
-        IN Icusto double,
-		IN Imarkup double,
-        IN Ilocal varchar(20),
-        IN Idisp BOOLEAN
-    )
-	BEGIN
-		CALL sp_allow(Iallow,Ihash);
-		IF(@allow)THEN
-			IF(Iid = 0)THEN
-				INSERT INTO tb_produto (id_emp,descricao,estoque,estq_min,und,ncm,cod_int,cod_bar,cod_forn,consumo,custo,markup,local,disponivel)
-				VALUES (Iid_emp,Idescricao,Iestoque,Iestq_min,Iund,Incm,Icod_int,Icod_bar,Icod_forn,Iconsumo,Icusto,Imarkup,Ilocal,Idisp);
-            ELSE
-				IF(Idescricao = "")THEN
-					DELETE FROM tb_produto WHERE id=Iid;
-                ELSE
-					UPDATE tb_produto 
-                    SET id_emp=Iid_emp,descricao=Idescricao,estoque=Iestoque,estq_min=Iestq_min,und=Iund,ncm=Incm,cod_int=Icod_int,
-					cod_bar=Icod_bar,cod_forn=Icod_forn,consumo=Iconsumo,custo=Icusto,markup=Imarkup,local=Ilocal,disponivel=Idisp
-                    WHERE id=Iid;
-                END IF;
-            END IF;
-        END IF;
-	END $$
-DELIMITER ;
-
-/* CLIENTE */
-
- DROP PROCEDURE IF EXISTS sp_view_cliente;
-DELIMITER $$
-	CREATE PROCEDURE sp_view_cliente(
-		IN Iallow varchar(80),
-		IN Ihash varchar(64),
-		IN Ifield varchar(30),
-        IN Isignal varchar(4),
-		IN Ivalue varchar(50)
-    )
-	BEGIN
-		CALL sp_allow(Iallow,Ihash);
-		IF(@allow)THEN
-			SET @quer =CONCAT('SELECT * FROM tb_cliente WHERE ',Ifield,' ',Isignal,' ',Ivalue,' ORDER BY nome;');
-			PREPARE stmt1 FROM @quer;
-			EXECUTE stmt1;
-        END IF;
-	END $$
-	DELIMITER ;        
-    
-	DROP PROCEDURE IF EXISTS sp_set_cliente;
-	DELIMITER $$
-	CREATE PROCEDURE sp_set_cliente(
-		IN Iallow varchar(80),
-		IN Ihash varchar(64),
-        IN Iid int(11),
-		IN Inome varchar(50),
-		IN Icpf varchar(12),
-		IN Icel varchar(15),
-		IN Isaldo double,
-		IN Iobs varchar(255)
-    )
-	BEGIN
-		CALL sp_allow(Iallow,Ihash);
-		IF(@allow)THEN
-			SET @cpf = (SELECT COUNT(*) FROM tb_cliente WHERE cpf COLLATE utf8_general_ci = Icpf COLLATE utf8_general_ci);
-            IF(@cpf = 0)THEN
-				IF(Iid=0)THEN
-					INSERT INTO tb_cliente (nome,cpf,cel,saldo,obs)
-					VALUES (Inome,Icpf,Icel,Isaldo,Iobs);
-					SELECT "Cliente cadastrado com sucesso!" AS MESSAGE, Iid AS id_cliente;
-                ELSE
-					IF(Inome="")THEN
-						DELETE FROM tb_cliente WHERE id=Iid;
-						SELECT "Cliente deletado com sucesso!" AS MESSAGE, Iid AS id_cliente;
-                    ELSE
-						UPDATE tb_cliente 
-                        SET nom=Inome,cpf=Icpf,cel=Icel,saldo=Isaldo,obs=Iobs
-                        WHERE id=Iid;
-						SELECT "Cliente editado com sucesso!" AS MESSAGE, @id AS id_cliente;
-                    END IF;
-                END IF;
-			ELSE
-				SELECT "Cliente já cadastrado!, verificar o CPF" AS MESSAGE,0 AS id_cliente;
-            END IF;
-        END IF;
-	END $$
-	DELIMITER ;     

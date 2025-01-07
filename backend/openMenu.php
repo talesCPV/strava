@@ -45,32 +45,34 @@ function addItem($access,$obj,$expirado = true){
 
   $out = [];
   $qtd_lin = 0;
-  
+  $access = -1;
+
 	if (IsSet($_POST["hash"])){
 	  $path = "../config/menu.json";
 	  $hash = $_POST["hash"];
-    $access = -1;
 
-    include_once "connect.php";
-    include_once "crip.php";
+  if (!$hash == '0') {
+      include_once "connect.php";
+      include_once "crip.php";
+  
+      $query = "SELECT access, expira FROM tb_usuario WHERE hash=\"$hash\";";
+  
+  // echo $query;    
+  
+      $result = mysqli_query($conexao, $query);
+      $qtd_lin = $result->num_rows;
+  
+      if($qtd_lin > 0){
+        $row = $result->fetch_assoc();
+  //      var_dump($row);
+        $access = $row["access"];
+      }
+        $conexao->close();  
 
-    $query = "SELECT access, expira FROM tb_usuario WHERE hash=\"$hash\";";
-
-// echo $query;    
-
-    $result = mysqli_query($conexao, $query);
-		$qtd_lin = $result->num_rows;
-
-		if($qtd_lin > 0){
-      $row = $result->fetch_assoc();
-//      var_dump($row);
-      $access = $row["access"];
-      $expirado = strtotime($row["expira"]) < strtotime(date("Y-m-d H:i:s")) ? 1 : 0;
-      
-		}
-	    $conexao->close();  
+    }
 
       if (file_exists($path)) {
+        
           $fp = fopen($path, "r");
           $resp = "";
           while (!feof ($fp)) {
@@ -78,7 +80,8 @@ function addItem($access,$obj,$expirado = true){
           }
           fclose($fp);
           $json = json_decode($resp);
-          $out = addItem($access,$json->itens,$expirado);
+//var_dump($json->itens);
+          $out = addItem($access,$json->itens);
       }            
 
   }
@@ -86,7 +89,7 @@ function addItem($access,$obj,$expirado = true){
 
 
 
-//    var_dump($out);
+    var_dump($out);
 	print json_encode($out);
 
 ?>
