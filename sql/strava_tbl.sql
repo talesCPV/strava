@@ -45,3 +45,17 @@ CREATE TABLE tb_calendario (
 ) ENGINE=MyISAM AUTO_INCREMENT=0 DEFAULT CHARSET=utf8;
 
 /* FIM PADRÃO */
+
+ DROP TABLE IF EXISTS tb_post;
+CREATE TABLE tb_post (
+    id int(11) NOT NULL AUTO_INCREMENT,
+    id_user int(11) NOT NULL,
+    id_parent int(11) DEFAULT NULL,
+    nome varchar(30),
+    texto varchar(512) NOT NULL,
+    distancia double,
+    tempo int,
+    cadastro TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    tipo varchar(3) DEFAULT "TXT",
+    PRIMARY KEY (id)
+) ENGINE=MyISAM AUTO_INCREMENT=0 DEFAULT CHARSET=utf8;
