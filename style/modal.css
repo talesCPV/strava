@@ -140,6 +140,10 @@
       left: unset;
     }
 
+    .web-window{
+      left: 50% !important;
+    }
+
   }
 
 /* FIM MODAL */

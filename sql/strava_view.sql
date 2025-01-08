@@ -11,8 +11,8 @@ CREATE VIEW vw_hora_dia AS
 	SELECT * FROM vw_hora_dia;
 
 DROP VIEW IF EXISTS vw_usuario;
-CREATE VIEW vw_usuario AS
-	SELECT id,email,access,nome,cadastro,expira,
+ CREATE VIEW vw_usuario AS
+	SELECT id,email,access,nome,cadastro,
 	IF(access=0,"ROOT",IFNULL((SELECT nome FROM tb_usr_perm_perfil WHERE USR.access = id),"DESCONHECIDO")) AS perfil 
 	FROM tb_usuario AS USR;
 

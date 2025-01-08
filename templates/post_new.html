@@ -1,0 +1,31 @@
+<template>
+    <style></style>
+
+    <fieldset>
+        <legend>Mensagem</legend>
+
+        <textarea id="edtMsg" rows="10"></textarea>
+        <div class="line">
+            <button id="btnSave">Postar</button>
+        </div>
+    </fieldset>
+
+    <div class="legenda">
+
+    </div>
+
+</template>
+<script>
+
+    const pageData = main_data.post_new.data
+    const pageFunc = main_data.post_new.func
+    const pageScreen = document.querySelector('#card-post_new')
+
+    function pageStart(){
+        pageScreen.querySelector('#edtMsg').focus
+    }
+
+
+    pageStart()
+
+</script>
