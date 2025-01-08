@@ -1,8 +1,12 @@
 <?php   
+
 	if (IsSet($_POST["hash"])){
+    
         $path = getcwd().'/../config/menu.json';
         $hash = $_POST["hash"];
+       
         $json = $_POST["json"];
+
         $access = -1;
 
         include "connect.php";        
@@ -24,5 +28,5 @@
         }
 
     }
- 
+
 ?>

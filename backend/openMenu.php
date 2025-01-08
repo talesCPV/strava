@@ -5,12 +5,12 @@ ini_set('error_reporting', E_ALL );
 define('WP_DEBUG', false);
 define('WP_DEBUG_DISPLAY', false);
 
-function addItem($access,$obj,$expirado = true){
+function addItem($access,$obj){
   $menu = [];
 
   for($i = 0; $i< count($obj); $i++){  
-//var_dump($obj[$i]);
-    if (in_array($access,$obj[$i]->access )) {
+
+    if (in_array($access,$obj[$i]->access ) || $obj[$i]->access == '-1') {
       $item = new stdClass();
       $item->modulo = $obj[$i]->modulo;
       $item->icone = $obj[$i]->icone;
@@ -18,23 +18,30 @@ function addItem($access,$obj,$expirado = true){
       $item->janela = $obj[$i]->janela;
       $item->label = $obj[$i]->label;
       $item->width = $obj[$i]->width;
+   
       if($obj[$i]->id != ''){
         $item->id = $obj[$i]->id;
       }
+   
       if($obj[$i]->class != ''){
         $item->class = $obj[$i]->class;
       }
+
       if($obj[$i]->href != ''){
         $item->href = $obj[$i]->href;
       }  
+  
+
 //      property_exists($obj[$i], 'id') ? $item->id = $obj[$i]->id : 0;
       $item->pg = property_exists($obj[$i], 'pg') ? $obj[$i]->pg : false;
-      $item->expirado = $expirado;
-      $item->access = crip(json_encode($obj[$i]->access));
+   
+//      $item->access = crip(json_encode($obj[$i]->access));
+    
       $item->itens = [];
 
+
       if(count($obj[$i]->itens) > 0){
-          array_push($item->itens, addItem($access, $obj[$i]->itens, $expirado));          
+          array_push($item->itens, addItem($access, $obj[$i]->itens));
       } 
       array_push($menu, $item);
     }       
@@ -55,9 +62,9 @@ function addItem($access,$obj,$expirado = true){
       include_once "connect.php";
       include_once "crip.php";
   
-      $query = "SELECT access, expira FROM tb_usuario WHERE hash=\"$hash\";";
+      $query = "SELECT access FROM tb_usuario WHERE hash=\"$hash\";";
   
-  // echo $query;    
+//   echo $query;    
   
       $result = mysqli_query($conexao, $query);
       $qtd_lin = $result->num_rows;
@@ -86,10 +93,6 @@ function addItem($access,$obj,$expirado = true){
 
   }
 
-
-
-
-    var_dump($out);
 	print json_encode($out);
 
 ?>

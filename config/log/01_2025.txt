@@ -1,1 +1,9 @@
 01/01/2025 22:12 tales@planet3.com.br : Edicao de Cliente Nome: Tales Cembraneli Dantas, CPF: 26687200879, Cel: 12997113793, Saldo: 10, Obs: 
+08/01/2025 14:18  : Menu Deletado (RAIZera)
+08/01/2025 14:18  : Menu Deletado (RAIZera)
+08/01/2025 14:18  : Menu Deletado (RAIZera)
+08/01/2025 14:18  : Menu Incluido (teste 2)
+08/01/2025 14:19  : Menu Incluido (teste 3)
+08/01/2025 14:32  : Menu Deletado (Teste)
+08/01/2025 14:32  : Menu Deletado (RAIZera)
+08/01/2025 15:14 tales@planet3.com.br :  Imagem Alterada -> Perfil Usuario: tales@planet3.com.br

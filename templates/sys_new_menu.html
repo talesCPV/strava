@@ -43,8 +43,8 @@
         </div>
 
         <div class="line">
-            <label for="ckbAss">Requer Assinatura</label>
-            <input type="checkbox" id="ckbAss" checked>
+            <label for="ckbPub">Publico</label>
+            <input type="checkbox" id="ckbPub" checked>
         </div>
 
         <div class="line">
@@ -70,15 +70,27 @@
         pageScreen.querySelector('#edtLabel').value = pageData.label
         pageScreen.querySelector('#edtLargura').value = pageData.width 
         pageScreen.querySelector('#edtIcon').value = pageData.icone 
-        pageScreen.querySelector('#ckbAss').checked = pageData.pg   
+        pageScreen.querySelector('#ckbPub').checked = pageData.access.includes(-1)   
         pageScreen.querySelector('#cmbJanela').value = pageData.janela   
     }
 
     function saveMenu(){
-console.log(1)        
+      
         main_data.sys_perm.func.refreshMenu()
         main_data.sys_perm.func.setMenu(JSON.stringify(main_data.sys_perm.data.json))
         closeModal('sys_new_menu')
+    }
+
+    function turnPublic(obj){
+        const pub = pageScreen.querySelector('#ckbPub').checked
+        const ind = obj.access.indexOf(-1)
+
+        if(pub){
+            ind==-1 ? obj.access.push(-1) : null
+        }else{        
+            ind!=-1 ? obj.access.splice(ind,1) : null
+        }
+
     }
 
     pageScreen.querySelector('#btnAddItem').addEventListener('click',()=>{
@@ -131,7 +143,6 @@ console.log(1)
             const janela = pageScreen.querySelector('#cmbJanela').value
             const label = pageScreen.querySelector('#edtLabel').value
             const icone = pageScreen.querySelector('#edtIcon').value
-            const ass = pageScreen.querySelector('#ckbAss').checked
             let width = pageScreen.querySelector('#edtLargura').value.trim()
 
             width = width != 'auto' ? parseInt(width) : 'auto'
@@ -143,15 +154,15 @@ console.log(1)
                 obj = obj.itens[index[i]]        
             }
 
+            turnPublic(obj)
+
             obj.modulo = modulo
             obj.link = link == '' ? 'error.html' : link
             obj.janela = janela
             obj.label = label
             obj.icone = icone
-            obj.pg = ass
             obj.width = width
             saveMenu()
-//            setLog(`Menu Alterado (${modulo}, ${link}, ${janela}, ${label})`)
         }
     })
 

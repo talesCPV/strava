@@ -117,7 +117,7 @@
     <nav id="sidebar">
         <div id="sidebar_content">
             <div id="user">
-                <img src="assets/icons/user_default.png" id="user_avatar" alt="=)">               
+                <img src="assets/icons/strava.svg" id="user_avatar" alt="=)">               
                 <p id="user_infos">
                     <span id="user-name" class="item-description" onclick="openHTML('usr_viewUser.html','pop-up','Configuração de Usuário',{},900)"></span>
                     <span id="user-email" class="item-description" onclick="openHTML('usr_mail.html','pop-up','Comunicação Interna',{},900)"></span>
@@ -302,7 +302,7 @@
     back.then((resp)=>{
         const imgExist = JSON.parse(resp)
         const img = document.querySelector('#user_avatar')
-        img.src =  imgExist ? `assets/users/${localStorage.getItem('id_user')}/perfil.jpg` : 'assets/icons/user_default.png'
+        img.src =  imgExist ? `assets/users/${localStorage.getItem('id_user')}/perfil.jpg` : 'assets/icons/strava.svg'
     }) 
 
     const login = document.querySelector('#login')

@@ -38,6 +38,7 @@ function openMenu(){
             const menu_data = JSON.parse(resolve)
             const menu = document.querySelector('#side_items')
             menu.innerHTML = ''//usr_menu
+         
             pushMenu(menu, menu_data)
 //            checkUserMail()
 //            checkUserSchedule()
