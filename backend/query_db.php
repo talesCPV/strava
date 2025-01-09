@@ -39,6 +39,7 @@
 //    echo $query; 
 
             $result = mysqli_query($conexao, $query);
+            
             if(is_object($result)){
                 if($result->num_rows > 0){			
                     while($r = mysqli_fetch_assoc($result)) {

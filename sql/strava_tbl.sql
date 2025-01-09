@@ -59,3 +59,10 @@ CREATE TABLE tb_post (
     tipo varchar(3) DEFAULT "TXT",
     PRIMARY KEY (id)
 ) ENGINE=MyISAM AUTO_INCREMENT=0 DEFAULT CHARSET=utf8;
+
+ DROP TABLE IF EXISTS tb_post_like;
+CREATE TABLE tb_post_like (
+    id_post int(11) NOT NULL,
+    id_user int(11) NOT NULL,
+    PRIMARY KEY (id_post,id_user)
+) ENGINE=MyISAM AUTO_INCREMENT=0 DEFAULT CHARSET=utf8;

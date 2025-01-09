@@ -339,3 +339,47 @@ DELIMITER $$
 DELIMITER ;
 
 /* FIM PADRÂO */
+
+ DROP PROCEDURE IF EXISTS sp_view_post;
+DELIMITER $$
+	CREATE PROCEDURE sp_view_post(
+		IN Idate datetime,
+		IN Istart int(11),        
+        IN Istop int(11)
+    )
+	BEGIN    
+		SELECT * FROM vw_post WHERE cadastro >= SUBDATE(Idate, 3) LIMIT Istart,Istop;
+	END $$
+DELIMITER ;
+
+ DROP PROCEDURE IF EXISTS sp_set_post;
+DELIMITER $$
+	CREATE PROCEDURE sp_set_post(
+		IN Iallow varchar(80),
+		IN Ihash varchar(64),
+		IN Iid int(11),
+        IN Iid_parent int(11),
+        IN Inome varchar(30),
+		IN Itexto varchar(512),
+		IN Idistancia double,
+		IN Itempo int,
+		IN Itipo varchar(3)
+    )
+	BEGIN    
+		CALL sp_allow(Iallow,Ihash);        
+		IF(@allow)THEN
+			SET @id_call = (SELECT IFNULL(id,0) FROM tb_usuario WHERE hash COLLATE utf8_general_ci = Ihash COLLATE utf8_general_ci LIMIT 1);
+
+			IF(Inome="")THEN
+				DELETE FROM tb_post WHERE id_os=Iid OR Iid_parent=Iid;
+            ELSE			
+				IF(Iid=0)THEN
+					INSERT INTO tb_post (id_user,id_parent,nome,texto,distancia,tempo,tipo)
+                    VALUES(@id_call,Iid_parent,Inome,Itexto,Idistancia,Itempo,Itipo);            
+                ELSE
+					UPDATE tb_post SET nome=inome,texto=itexto,distancia=idistancia,tempo=itempo,tipo=itipo WHERE id=Iid;
+                END IF;
+            END IF;
+        END IF;
+	END $$
+DELIMITER ;

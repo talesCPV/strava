@@ -18,15 +18,13 @@ DROP VIEW IF EXISTS vw_usuario;
 
 SELECT * FROM vw_usuario;
 
- DROP VIEW IF EXISTS vw_prod;
- CREATE VIEW vw_prod AS 
-    SELECT 
-        PROD.*,FORN.fantasia AS fornecedor,
-        ROUND(((PROD.markup/100 + 1)*PROD.custo),2) AS preco
-    FROM
-        tb_produto AS PROD
-	JOIN tb_empresa AS FORN
-	ON FORN.id = PROD.id_emp
-	GROUP BY PROD.id;
-    
- SELECT * FROM vw_prod;
+DROP VIEW IF EXISTS vw_post;
+ CREATE VIEW vw_post AS
+	SELECT PST.*,USR.nome AS nome_usuario,
+	(SELECT COUNT(*) FROM tb_post WHERE id_parent=PST.id) AS COMM,
+	(SELECT COUNT(*) FROM tb_post_like WHERE id_post=PST.id) AS LIK
+	FROM tb_post AS PST
+    INNER JOIN tb_usuario AS USR
+    ON PST.id_user = USR.id;
+
+SELECT * FROM vw_post;
