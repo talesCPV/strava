@@ -2,57 +2,34 @@
 function getPost(data,start,stop){
 
     const params = new Object;
+        params.hash = localStorage.getItem('hash') != null ? localStorage.getItem('hash') : 0
         params.data = data
         params.start = start
         params.stop = stop
-    const myPromisse = queryDB(params,'POST-0');
+    const myPromisse = queryDB(params,'POST-0')
     myPromisse.then((resolve)=>{
         const json = JSON.parse(resolve)
-        console.log(json)
         addPost(json)
     })
-
 }
 
-/*
-        <div class="post">
-            <div class="post-head">
-                <div class="post-head-left">
-                    <img class="post-head-img" src="assets/users/1/perfil.jpg" alt="">
-                    <div class="post-head-name">Tales C. Dantas</div>
-                </div>
-                <div class="post-head-rigth">
-                    <div class="post-btn">Subscribe</div>
-                    <div class="btnMore">...</div>
-                </div>
-            </div>
-            <div class="post-text">
-                Lorem ipsum dolor sit amet. Id voluptas harum et ullam corrupti et doloremque rerum vel ipsa natus vel adipisci nisi. Et incidunt molestiae et ducimus incidunt in nostrum reiciendis ut veniam quia ea impedit perferendis in facere voluptatem 33 alias eaque. 
-            </div>
-            <img class="post-img" src="posts/img1.jpg" alt="">
-            <div class="post-time">
-                00:00 PM Oct-10,2024 - 200 Views
-            </div>
-            <div class="post-social">
-                <div class="post-social-chat">
-                    <span class="mdi mdi-chat-outline"></span>
-                    <p>50</p>
-                </div>
-                <div class="post-social-like">
-                    <span class="mdi mdi-thumb-up-outline"></span>
-                    <p>15</p>
-                </div>
-                            
-            </div>
-        </div>
-*/
+function likePost(id,div){
+
+    const params = new Object;
+        params.hash = localStorage.getItem('hash') != null ? localStorage.getItem('hash') : 0
+        params.id = id
+    const myPromisse = queryDB(params,'POST-2')
+    myPromisse.then((resolve)=>{
+        const json = JSON.parse(resolve)[0]
+        div.querySelector('p').innerHTML = json.LK
+    })
+}
 
 function addPost(obj){
 
     const screen = document.querySelector('#content-screen')
 
     for(let i=0; i<obj.length; i++){
-        console.log(obj[i])
         const post = document.createElement('div')
         post.className = 'post'
 
@@ -95,8 +72,25 @@ function addPost(obj){
 
         const post_time = document.createElement('div')
         post_time.className = 'post-time'
-        post_time.innerHTML = obj[i].cadastro
+        post_time.innerHTML = `${obj[i].cadastro.viewXDate()} - ${obj[i].VW} Views`
         post.appendChild(post_time)
+
+        const post_social = document.createElement('div')
+        post_social.className = 'post-social'
+        post.appendChild(post_social)
+
+        const post_chat = document.createElement('div')
+        post_chat.className = 'post-social-chat'
+        post_chat.innerHTML = `<span class="mdi mdi-chat-outline"></span><p>${obj[i].COMM}</p>`
+        post_social.appendChild(post_chat)
+
+        const post_like = document.createElement('div')
+        post_like.innerHTML = `<span class="mdi mdi-thumb-up-outline"></span><p>${obj[i].LK}</p>`
+        post_like.className = 'post-social-chat'
+        post_like.addEventListener('click',()=>{
+            likePost(obj[i].id,post_like)
+        })
+        post_social.appendChild(post_like)
 
         screen.appendChild(post)
     }

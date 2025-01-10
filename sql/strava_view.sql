@@ -22,7 +22,8 @@ DROP VIEW IF EXISTS vw_post;
  CREATE VIEW vw_post AS
 	SELECT PST.*,USR.nome AS nome_usuario,
 	(SELECT COUNT(*) FROM tb_post WHERE id_parent=PST.id) AS COMM,
-	(SELECT COUNT(*) FROM tb_post_like WHERE id_post=PST.id) AS LIK
+	(SELECT COUNT(*) FROM tb_post_like WHERE id_post=PST.id) AS LK,
+    (SELECT COUNT(*) FROM tb_post_view WHERE id_post=PST.id) AS VW
 	FROM tb_post AS PST
     INNER JOIN tb_usuario AS USR
     ON PST.id_user = USR.id;

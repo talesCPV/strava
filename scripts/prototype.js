@@ -30,9 +30,17 @@ String.prototype.viewDate = function(){
     return (str.substring(8,10)+'/'+str.substring(5,7)+'/'+str.substring(0,4))
 }
 
-String.prototype.time = function(){
+String.prototype.viewTime = function(){
     const str = this.valueOf()
     return (str.substring(11,16))
+}
+
+String.prototype.viewXDate = function(){
+    const month = ['Jan','Fev','Mar','Abr','Mai','Jun','Jul','Ago','Set','Out','Nov','Dez']
+    const str = this.valueOf()
+    const period = Number(str.substring(11,13)) >= 12 ? 'PM' : 'AM'
+    const time = period == 'AM' ? str.substring(11,16) : Number(str.substring(11,13)) - 12 +  str.substring(13,16)
+    return `${time} ${period} ${month[Number(str.substring(5,7))]}-${str.substring(8,10)},${str.substring(0,4)}`
 }
 
 /* DATE */

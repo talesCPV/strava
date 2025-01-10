@@ -343,12 +343,18 @@ DELIMITER ;
  DROP PROCEDURE IF EXISTS sp_view_post;
 DELIMITER $$
 	CREATE PROCEDURE sp_view_post(
+		IN Ihash varchar(64),
 		IN Idate datetime,
 		IN Istart int(11),        
         IN Istop int(11)
     )
 	BEGIN    
+		SET @id_call = (SELECT IFNULL(id,0) FROM tb_usuario WHERE hash COLLATE utf8_general_ci = Ihash COLLATE utf8_general_ci LIMIT 1);		
 		SELECT * FROM vw_post WHERE cadastro >= SUBDATE(Idate, 3) LIMIT Istart,Istop;
+        IF(@id_call != 0)THEN
+			SELECT @id_call;
+			INSERT INTO tb_post_view (SELECT id, @id_call AS A FROM vw_post WHERE cadastro >= SUBDATE(Idate, 3) LIMIT Istart,Istop);
+		END IF;
 	END $$
 DELIMITER ;
 
@@ -369,17 +375,34 @@ DELIMITER $$
 		CALL sp_allow(Iallow,Ihash);        
 		IF(@allow)THEN
 			SET @id_call = (SELECT IFNULL(id,0) FROM tb_usuario WHERE hash COLLATE utf8_general_ci = Ihash COLLATE utf8_general_ci LIMIT 1);
-
 			IF(Inome="")THEN
 				DELETE FROM tb_post WHERE id_os=Iid OR Iid_parent=Iid;
-            ELSE			
+            ELSE
 				IF(Iid=0)THEN
 					INSERT INTO tb_post (id_user,id_parent,nome,texto,distancia,tempo,tipo)
-                    VALUES(@id_call,Iid_parent,Inome,Itexto,Idistancia,Itempo,Itipo);            
+                    VALUES(@id_call,Iid_parent,Inome,Itexto,Idistancia,Itempo,Itipo);
                 ELSE
 					UPDATE tb_post SET nome=inome,texto=itexto,distancia=idistancia,tempo=itempo,tipo=itipo WHERE id=Iid;
                 END IF;
             END IF;
         END IF;
+	END $$
+DELIMITER ;
+
+DROP PROCEDURE IF EXISTS sp_like_post;
+DELIMITER $$
+	CREATE PROCEDURE sp_like_post(
+		IN Ihash varchar(64),
+		IN Iid_post int(11)
+    )
+	BEGIN
+		SET @id_call = (SELECT IFNULL(id,0) FROM tb_usuario WHERE hash COLLATE utf8_general_ci = Ihash COLLATE utf8_general_ci LIMIT 1);
+		SET @has = (SELECT COUNT(*) FROM tb_post_like WHERE id_post = Iid_post AND id_user = @id_call);
+        IF(@has>0)THEN
+			DELETE FROM tb_post_like WHERE id_post = Iid_post AND id_user = @id_call; 
+		ELSE 
+			INSERT INTO tb_post_like (id_post,id_user) VALUES (Iid_post, @id_call);
+        END IF;
+        SELECT COUNT(*) AS LK FROM tb_post_like WHERE id_post = Iid_post; 
 	END $$
 DELIMITER ;
