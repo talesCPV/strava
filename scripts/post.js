@@ -18,11 +18,13 @@ function likePost(id,div){
     const params = new Object;
         params.hash = localStorage.getItem('hash') != null ? localStorage.getItem('hash') : 0
         params.id = id
-    const myPromisse = queryDB(params,'POST-2')
-    myPromisse.then((resolve)=>{
-        const json = JSON.parse(resolve)[0]
-        div.querySelector('p').innerHTML = json.LK
-    })
+    if(params.hash){
+        const myPromisse = queryDB(params,'POST-2')
+        myPromisse.then((resolve)=>{
+            const json = JSON.parse(resolve)[0]
+            div.querySelector('p').innerHTML = json.LK
+        })    
+    }
 }
 
 function addPost(obj){
