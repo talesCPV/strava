@@ -350,9 +350,8 @@ DELIMITER $$
     )
 	BEGIN    
 		SET @id_call = (SELECT IFNULL(id,0) FROM tb_usuario WHERE hash COLLATE utf8_general_ci = Ihash COLLATE utf8_general_ci LIMIT 1);		
-		SELECT * FROM vw_post WHERE cadastro >= SUBDATE(Idate, 3) LIMIT Istart,Istop;
+		SELECT *, (@id_call=id_user) AS owner FROM vw_post WHERE cadastro >= SUBDATE(Idate, 3) LIMIT Istart,Istop;
         IF(@id_call != 0)THEN
-			SELECT @id_call;
 			INSERT INTO tb_post_view (SELECT id, @id_call AS A FROM vw_post WHERE cadastro >= SUBDATE(Idate, 3) LIMIT Istart,Istop);
 		END IF;
 	END $$
@@ -376,7 +375,7 @@ DELIMITER $$
 		IF(@allow)THEN
 			SET @id_call = (SELECT IFNULL(id,0) FROM tb_usuario WHERE hash COLLATE utf8_general_ci = Ihash COLLATE utf8_general_ci LIMIT 1);
 			IF(Inome="")THEN
-				DELETE FROM tb_post WHERE id_os=Iid OR Iid_parent=Iid;
+				DELETE FROM tb_post WHERE id=Iid OR Iid_parent=Iid;
             ELSE
 				IF(Iid=0)THEN
 					INSERT INTO tb_post (id_user,id_parent,nome,texto,distancia,tempo,tipo)

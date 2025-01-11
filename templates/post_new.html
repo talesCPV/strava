@@ -23,27 +23,32 @@
     const newReg = Object.keys(pageData).length <= 1
 
     function pageStart(){
+        pageScreen.querySelector('#edtMsg').value = newReg ? '' : pageData.texto
         pageScreen.querySelector('#edtMsg').focus
     }
 
-    function setPost(del=0){
+    function postar(){
 
         const params = new Object;
             params.id = newReg ? 0 : pageData.id
             params.id_parent = 0
-            params.nome = del ? '' : 'txt'
+            params.nome = 'txt'
             params.texto = pageScreen.querySelector('#edtMsg').value
             params.distancia = 0
             params.tempo = 0
             params.tipo = 'txt'
-        const myPromisse = queryDB(params,'POST-1');
-        myPromisse.then((resolve)=>{
-            console.log('POSTOU!!')
+        setPost(params).then((resolve)=>{
+            if(newReg){
+                getPost(today.getFullDateTime())
+            }else{
+                document.querySelector('#content-screen').querySelector(`#post-${pageData.id}`).querySelector('.post-text').innerHTML = pageScreen.querySelector('#edtMsg').value
+            }
+            closeModal('post_new')
         })
     }
 
     pageScreen.querySelector('#btnPost').addEventListener('click',()=>{
-        setPost()
+        postar()
     })
 
 

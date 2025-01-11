@@ -203,7 +203,7 @@ function queueModal(id){
     
 }
 
-function menuContext(tbl,e){
+function menuContext(tbl,e,float=1){
 
     function removeFrame(){
         const frame = document.querySelectorAll('.back-frame')
@@ -235,7 +235,12 @@ function menuContext(tbl,e){
         mod_card.style.zIndex = 100
         mod_card.style.margin = '0 auto'
         mod_card.style.top = e.clientY+'px'
-        mod_card.style.left = e.clientX+'px'
+        if(float){
+            mod_card.style.left = e.clientX+'px'
+        }else{
+            mod_card.style.right = '2%'
+        }
+
         mod_card.style.overflow = 'auto'
 
     const mod_content = document.createElement('table')

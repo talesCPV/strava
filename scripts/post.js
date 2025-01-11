@@ -1,14 +1,25 @@
 
-function getPost(data,start,stop){
+function setPost(obj){
+    return  queryDB(obj,'POST-1')
+}
+
+function delPost(id,div){                   
+    setPost({0:id,1:0,2:'',3:'',4:'',5:0,6:''}).then(()=>{
+        div.remove()
+    })
+}
+
+function getPost(data){
 
     const params = new Object;
         params.hash = localStorage.getItem('hash') != null ? localStorage.getItem('hash') : 0
         params.data = data
-        params.start = start
-        params.stop = stop
+        params.start = main_data.dashboard.startPost
+        params.limit = main_data.dashboard.limitPost
     const myPromisse = queryDB(params,'POST-0')
     myPromisse.then((resolve)=>{
         const json = JSON.parse(resolve)
+        main_data.dashboard.startPost += json.length
         addPost(json)
     })
 }
@@ -33,6 +44,7 @@ function addPost(obj){
 
     for(let i=0; i<obj.length; i++){
         const post = document.createElement('div')
+        post.id = `post-${obj[i].id}`
         post.className = 'post'
 
         const head = document.createElement('div')
@@ -63,6 +75,26 @@ function addPost(obj){
         const btn_more = document.createElement('div')
         btn_more.className = 'btnMore'
         btn_more.innerHTML = '...'
+        if(obj[i].owner=='1'){
+            btn_more.addEventListener('click',(e)=>{
+                const tbl = []
+                const mail = new Object
+                mail.label = 'Editar'
+                mail.link = ()=>{
+                    openHTML('post_new.html','pop-up','Edição...',obj[i],800)
+                }            
+                tbl.push(mail)
+                const user = new Object
+                user.label = 'Deletar'
+                user.link = ()=>{
+                    if(confirm('Deseja deletar este post?')){
+                        delPost(obj[i].id,post)
+                    }
+                }            
+                tbl.push(user)
+                menuContext(tbl,e,0)
+            })
+        }
         head_rigth.appendChild(btn_more)
         head.appendChild(head_rigth)
         post.appendChild(head)
