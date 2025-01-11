@@ -21,10 +21,18 @@
     const pageFunc = main_data.post_new.func
     const pageScreen = document.querySelector('#card-post_new')
     const newReg = Object.keys(pageData).length <= 1
+    const comm = pageData.action == 'COMM'
 
     function pageStart(){
-        pageScreen.querySelector('#edtMsg').value = newReg ? '' : pageData.texto
-        pageScreen.querySelector('#edtMsg').focus
+        if(!newReg){
+            if(pageData.action == 'COMM'){
+
+            }else{
+                pageScreen.querySelector('#edtMsg').value = pageData.texto
+                pageScreen.querySelector('#edtMsg').focus
+            }
+        }
+   
     }
 
     function postar(){
@@ -40,8 +48,12 @@
         setPost(params).then((resolve)=>{
             if(newReg){
                 getPost(today.getFullDateTime())
-            }else{
-                document.querySelector('#content-screen').querySelector(`#post-${pageData.id}`).querySelector('.post-text').innerHTML = pageScreen.querySelector('#edtMsg').value
+            }else{             
+                if(pageData.action == 'COMM'){
+
+                }else{
+                    document.querySelector('#content-screen').querySelector(`#post-${pageData.id}`).querySelector('.post-text').innerHTML = pageScreen.querySelector('#edtMsg').value
+                }
             }
             closeModal('post_new')
         })
@@ -50,7 +62,6 @@
     pageScreen.querySelector('#btnPost').addEventListener('click',()=>{
         postar()
     })
-
 
     pageStart()
 

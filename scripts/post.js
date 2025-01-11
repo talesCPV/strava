@@ -38,6 +38,13 @@ function likePost(id,div){
     }
 }
 
+function commentPost(id,div){
+    console.log(div)
+    div.data.action = 'COMM'
+    openHTML('post_new.html','pop-up','Comentarios',div.data)
+
+}
+
 function addPost(obj){
 
     const screen = document.querySelector('#content-screen')
@@ -45,6 +52,7 @@ function addPost(obj){
     for(let i=0; i<obj.length; i++){
         const post = document.createElement('div')
         post.id = `post-${obj[i].id}`
+        post.data = obj[i]
         post.className = 'post'
 
         const head = document.createElement('div')
@@ -81,6 +89,7 @@ function addPost(obj){
                 const mail = new Object
                 mail.label = 'Editar'
                 mail.link = ()=>{
+                    obj[i].action = 'EDT'
                     openHTML('post_new.html','pop-up','Edição...',obj[i],800)
                 }            
                 tbl.push(mail)
@@ -116,6 +125,9 @@ function addPost(obj){
         const post_chat = document.createElement('div')
         post_chat.className = 'post-social-chat'
         post_chat.innerHTML = `<span class="mdi mdi-chat-outline"></span><p>${obj[i].COMM}</p>`
+        post_chat.addEventListener('click',()=>{
+            commentPost(obj[i].id,post)
+        })
         post_social.appendChild(post_chat)
 
         const post_like = document.createElement('div')
