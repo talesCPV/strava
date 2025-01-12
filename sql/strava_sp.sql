@@ -350,9 +350,26 @@ DELIMITER $$
     )
 	BEGIN    
 		SET @id_call = (SELECT IFNULL(id,0) FROM tb_usuario WHERE hash COLLATE utf8_general_ci = Ihash COLLATE utf8_general_ci LIMIT 1);		
-		SELECT *, (@id_call=id_user) AS owner FROM vw_post WHERE cadastro >= SUBDATE(Idate, 3) LIMIT Istart,Istop;
+		SELECT *, (@id_call=id_user) AS owner FROM vw_post WHERE cadastro >= SUBDATE(Idate, 5) AND id_parent=0 LIMIT Istart,Istop;
+        
         IF(@id_call != 0)THEN
-			INSERT INTO tb_post_view (SELECT id, @id_call AS A FROM vw_post WHERE cadastro >= SUBDATE(Idate, 3) LIMIT Istart,Istop);
+			REPLACE INTO tb_post_view (SELECT id, @id_call AS A FROM vw_post WHERE cadastro >= SUBDATE(Idate, 3) AND id_parent=0 LIMIT Istart,Istop);
+		END IF;
+	END $$
+DELIMITER ;
+
+ DROP PROCEDURE IF EXISTS sp_view_comm;
+DELIMITER $$
+	CREATE PROCEDURE sp_view_comm(
+		IN Ihash varchar(64),
+		IN Iid_post int(11)
+    )
+	BEGIN    
+		SET @id_call = (SELECT IFNULL(id,0) FROM tb_usuario WHERE hash COLLATE utf8_general_ci = Ihash COLLATE utf8_general_ci LIMIT 1);		
+		SELECT *, (@id_call=id_user) AS owner FROM vw_post WHERE id_parent=Iid_post;
+        
+        IF(@id_call != 0)THEN
+			REPLACE INTO tb_post_view (SELECT id, @id_call AS A FROM vw_post WHERE id_parent=Iid_post);
 		END IF;
 	END $$
 DELIMITER ;

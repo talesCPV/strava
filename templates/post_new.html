@@ -1,7 +1,17 @@
 <template>
-    <style></style>
+    <style>
+        .old-post{
+            display: none;
+            padding: 10px;
+        }
+    </style>
 
-    <fieldset>
+    <fieldset class="old-post">
+        <legend>Mensagem Original</legend>
+        <p id="msg-old-post"></p>
+    </fieldset>
+
+    <fieldset class="new-post">
         <legend>Mensagem</legend>
 
         <textarea id="edtMsg" rows="10"></textarea>
@@ -26,7 +36,9 @@
     function pageStart(){
         if(!newReg){
             if(pageData.action == 'COMM'){
-
+                pageScreen.querySelector('#msg-old-post').innerHTML = pageData.texto
+                pageScreen.querySelector('.new-post').querySelector('legend').innerHTML  = 'Resposta'
+                pageScreen.querySelector('.old-post').style.display = 'block'
             }else{
                 pageScreen.querySelector('#edtMsg').value = pageData.texto
                 pageScreen.querySelector('#edtMsg').focus
@@ -38,8 +50,8 @@
     function postar(){
 
         const params = new Object;
-            params.id = newReg ? 0 : pageData.id
-            params.id_parent = 0
+            params.id = newReg || pageData.action == 'COMM' ? 0 : pageData.id
+            params.id_parent = pageData.action == 'COMM' ? pageData.id : 0
             params.nome = 'txt'
             params.texto = pageScreen.querySelector('#edtMsg').value
             params.distancia = 0

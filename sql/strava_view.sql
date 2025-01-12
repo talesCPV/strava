@@ -28,4 +28,4 @@ DROP VIEW IF EXISTS vw_post;
     INNER JOIN tb_usuario AS USR
     ON PST.id_user = USR.id;
 
-SELECT *,(2=id_user) AS owner FROM vw_post;
+SELECT * FROM vw_post;

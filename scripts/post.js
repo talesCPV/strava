@@ -3,6 +3,7 @@ function setPost(obj){
     return  queryDB(obj,'POST-1')
 }
 
+
 function delPost(id,div){                   
     setPost({0:id,1:0,2:'',3:'',4:'',5:0,6:''}).then(()=>{
         div.remove()
@@ -10,7 +11,6 @@ function delPost(id,div){
 }
 
 function getPost(data){
-
     const params = new Object;
         params.hash = localStorage.getItem('hash') != null ? localStorage.getItem('hash') : 0
         params.data = data
@@ -22,6 +22,13 @@ function getPost(data){
         main_data.dashboard.startPost += json.length
         addPost(json)
     })
+}
+
+function getComm(id_post){
+    const params = new Object;
+        params.hash = localStorage.getItem('hash') != null ? localStorage.getItem('hash') : 0
+        params.id_post = id_post
+    return queryDB(params,'POST-3')
 }
 
 function likePost(id,div){
@@ -40,15 +47,20 @@ function likePost(id,div){
 
 function commentPost(id,div){
     console.log(div)
+    getComm(id).then((resolve)=>{
+        const json = JSON.parse(resolve)
+        console.log(json)
+        div.querySelector('.post-comm').innerHTML = json[0].texto
+    })
+/*    
     div.data.action = 'COMM'
     openHTML('post_new.html','pop-up','Comentarios',div.data)
-
+*/
 }
 
 function addPost(obj){
 
     const screen = document.querySelector('#content-screen')
-
     for(let i=0; i<obj.length; i++){
         const post = document.createElement('div')
         post.id = `post-${obj[i].id}`
@@ -137,6 +149,10 @@ function addPost(obj){
             likePost(obj[i].id,post_like)
         })
         post_social.appendChild(post_like)
+
+        const post_comm = document.createElement('div')
+        post_comm.className = 'post-comm'
+        post.appendChild(post_comm)
 
         screen.appendChild(post)
     }
