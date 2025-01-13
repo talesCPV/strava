@@ -15,10 +15,10 @@ function getPost(data){
         params.hash = localStorage.getItem('hash') != null ? localStorage.getItem('hash') : 0
         params.data = data
         params.start = main_data.dashboard.startPost
-        params.limit = main_data.dashboard.limitPost
+        params.limit = main_data.dashboard.limitPost    
     const myPromisse = queryDB(params,'POST-0')
     myPromisse.then((resolve)=>{
-        const json = JSON.parse(resolve)
+        const json = JSON.parse(resolve)      
         main_data.dashboard.startPost += json.length
         addPost(json)
     })
@@ -46,12 +46,57 @@ function likePost(id,div){
 }
 
 function commentPost(id,div){
-    console.log(div)
-    getComm(id).then((resolve)=>{
-        const json = JSON.parse(resolve)
-        console.log(json)
-        div.querySelector('.post-comm').innerHTML = json[0].texto
-    })
+    const comments = div.querySelectorAll('.comments')
+
+    if(comments.length){
+        for(let i=0; i<comments.length; i++){
+            comments[i].remove()
+        }
+    }else{
+        getComm(id).then((resolve)=>{
+            const json = JSON.parse(resolve)
+            console.log(json)
+            for(let i=0; i<json.length; i++){
+                const comm = document.createElement('div')
+                comm.className = 'comments'
+                comm.innerHTML = json[i].texto
+                div.appendChild(comm)
+            }
+
+            const comm = document.createElement('div')
+            comm.className = 'comments'
+            div.appendChild(comm)
+
+            const ta = document.createElement('textarea')
+            ta.className = 'post-new-comm'
+            comm.appendChild(ta)
+
+            const btn = document.createElement('button')
+            btn.innerHTML = 'Postar'
+            comm.appendChild(btn)
+
+            btn.addEventListener('click',()=>{
+
+                const params = new Object;
+                    params.id = 0
+                    params.id_parent = id
+                    params.nome = 'txt'
+                    params.texto = ta.value
+                    params.distancia = 0
+                    params.tempo = 0
+                    params.tipo = 'txt'
+                setPost(params).then((resolve)=>{
+                    console.log(resolve)
+                })
+
+            })
+
+
+            ta.focus()
+        })
+    }
+
+
 /*    
     div.data.action = 'COMM'
     openHTML('post_new.html','pop-up','Comentarios',div.data)
