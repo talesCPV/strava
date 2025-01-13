@@ -55,44 +55,42 @@ function commentPost(id,div){
     }else{
         getComm(id).then((resolve)=>{
             const json = JSON.parse(resolve)
-            console.log(json)
             for(let i=0; i<json.length; i++){
                 const comm = document.createElement('div')
                 comm.className = 'comments'
                 comm.innerHTML = json[i].texto
                 div.appendChild(comm)
             }
-
-            const comm = document.createElement('div')
-            comm.className = 'comments'
-            div.appendChild(comm)
-
-            const ta = document.createElement('textarea')
-            ta.className = 'post-new-comm'
-            comm.appendChild(ta)
-
-            const btn = document.createElement('button')
-            btn.innerHTML = 'Postar'
-            comm.appendChild(btn)
-
-            btn.addEventListener('click',()=>{
-
-                const params = new Object;
-                    params.id = 0
-                    params.id_parent = id
-                    params.nome = 'txt'
-                    params.texto = ta.value
-                    params.distancia = 0
-                    params.tempo = 0
-                    params.tipo = 'txt'
-                setPost(params).then((resolve)=>{
-                    console.log(resolve)
+            if(localStorage.getItem('hash') != null){
+                const comm = document.createElement('div')
+                comm.className = 'comments'
+                div.appendChild(comm)
+    
+                const ta = document.createElement('textarea')
+                ta.className = 'post-new-comm'
+                comm.appendChild(ta)
+    
+                const btn = document.createElement('button')
+                btn.innerHTML = 'Postar'
+                comm.appendChild(btn)
+    
+                btn.addEventListener('click',()=>{
+    
+                    const params = new Object;
+                        params.id = 0
+                        params.id_parent = id
+                        params.nome = 'txt'
+                        params.texto = ta.value
+                        params.distancia = 0
+                        params.tempo = 0
+                        params.tipo = 'txt'
+                    setPost(params).then((resolve)=>{
+                        console.log(resolve)
+                    })
                 })
+                ta.focus()
+            }
 
-            })
-
-
-            ta.focus()
         })
     }
 
