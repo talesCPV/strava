@@ -48,10 +48,9 @@ function likePost(id,div){
 function newComm(id,div){
 
     const comm = document.createElement('div')
-    comm.className = 'comments post'
-
 
     if(localStorage.getItem('hash') != null){
+        comm.className = 'comments post'
 
         const ta = document.createElement('textarea')
         ta.className = 'post-new-comm'
