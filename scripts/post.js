@@ -45,159 +45,167 @@ function likePost(id,div){
     }
 }
 
-function commentPost(id,div){
-    const comments = div.querySelectorAll('.comments')
+function newComm(id,div){
 
-    if(comments.length){
-        for(let i=0; i<comments.length; i++){
-            comments[i].remove()
-        }
+    const comm = document.createElement('div')
+    comm.className = 'comments post'
+
+
+    if(localStorage.getItem('hash') != null){
+
+        const ta = document.createElement('textarea')
+        ta.className = 'post-new-comm'
+        comm.appendChild(ta)
+
+        const btn = document.createElement('button')
+        btn.innerHTML = 'Postar'
+        comm.appendChild(btn)
+
+        btn.addEventListener('click',()=>{
+console.log(div)
+            const params = new Object;
+                params.id = 0
+                params.id_parent = id
+                params.nome = 'txt'
+                params.texto = ta.value
+                params.distancia = 0
+                params.tempo = 0
+                params.tipo = 'txt'
+            setPost(params).then((resolve)=>{
+                const json =  JSON.parse(resolve)
+                console.log(json)
+                div.querySelector('.post-comm').innerHTML = ''
+                for(let i=0; i<json.length; i++){
+                    div.querySelector('.post-comm').appendChild(makePost(json[i]))
+                }
+
+            })
+        })
+        ta.focus()
+    }
+    return comm
+}
+
+function commentPost(id,div){
+
+    const comments = div.querySelector('.post-comm')
+
+    if(comments.innerHTML.length){
+        comments.innerHTML = ''        
     }else{
         getComm(id).then((resolve)=>{
             const json = JSON.parse(resolve)
             for(let i=0; i<json.length; i++){
-                const comm = document.createElement('div')
-                comm.className = 'comments'
-                comm.innerHTML = json[i].texto
-                div.appendChild(comm)
+                comments.appendChild(makePost(json[i]))         
             }
-            if(localStorage.getItem('hash') != null){
-                const comm = document.createElement('div')
-                comm.className = 'comments'
-                div.appendChild(comm)
-    
-                const ta = document.createElement('textarea')
-                ta.className = 'post-new-comm'
-                comm.appendChild(ta)
-    
-                const btn = document.createElement('button')
-                btn.innerHTML = 'Postar'
-                comm.appendChild(btn)
-    
-                btn.addEventListener('click',()=>{
-    
-                    const params = new Object;
-                        params.id = 0
-                        params.id_parent = id
-                        params.nome = 'txt'
-                        params.texto = ta.value
-                        params.distancia = 0
-                        params.tempo = 0
-                        params.tipo = 'txt'
-                    setPost(params).then((resolve)=>{
-                        console.log(resolve)
-                    })
-                })
-                ta.focus()
-            }
+            comments.appendChild(newComm(id,div))
+
 
         })
     }
+}
 
+function makePost(obj){
+    const post = document.createElement('div')
+    post.id = `post-${obj.id}`
+    post.data = obj
+    post.className = 'post'
 
-/*    
-    div.data.action = 'COMM'
-    openHTML('post_new.html','pop-up','Comentarios',div.data)
-*/
+    const head = document.createElement('div')
+    head.className = 'post-head'
+
+    const head_left = document.createElement('div')
+    head_left.className = 'post-head-left'
+
+    const img = document.createElement('img')
+    img.className = 'post-head-img'
+    img.src = `assets/users/${obj.id_user}/perfil.jpg`
+    head_left.appendChild(img)
+
+    const head_name = document.createElement('div')
+    head_name.className = 'post-head-name'
+    head_name.innerHTML = obj.nome_usuario
+    head_left.appendChild(head_name)
+    head.appendChild(head_left)
+
+    const head_rigth = document.createElement('div')
+    head_rigth.className = 'post-head-left'
+
+    const subs_btn = document.createElement('div')
+    subs_btn.className = 'post-btn'
+    subs_btn.innerHTML = 'Subscribe'
+    head_rigth.appendChild(subs_btn)
+
+    const btn_more = document.createElement('div')
+    btn_more.className = 'btnMore'
+    btn_more.innerHTML = '...'
+    if(obj.owner=='1'){
+        btn_more.addEventListener('click',(e)=>{
+            const tbl = []
+            const mail = new Object
+            mail.label = 'Editar'
+            mail.link = ()=>{
+                obj.action = 'EDT'
+                openHTML('post_new.html','pop-up','Edição...',obj,800)
+            }            
+            tbl.push(mail)
+            const user = new Object
+            user.label = 'Deletar'
+            user.link = ()=>{
+                if(confirm('Deseja deletar este post?')){
+                    delPost(obj.id,post)
+                }
+            }            
+            tbl.push(user)
+            menuContext(tbl,e,0)
+        })
+    }
+    head_rigth.appendChild(btn_more)
+    head.appendChild(head_rigth)
+    post.appendChild(head)
+
+    const post_text = document.createElement('div')
+    post_text.className = 'post-text'
+    post_text.innerHTML = obj.texto
+    post.appendChild(post_text)
+
+    const post_time = document.createElement('div')
+    post_time.className = 'post-time'
+    post_time.innerHTML = `${obj.cadastro.viewXDate()} - ${obj.VW} Views`
+    post.appendChild(post_time)
+
+    const post_social = document.createElement('div')
+    post_social.className = 'post-social'
+    post.appendChild(post_social)
+
+    const post_chat = document.createElement('div')
+    post_chat.className = 'post-social-chat'
+    post_chat.innerHTML = `<span class="mdi mdi-chat-outline"></span><p>${obj.COMM}</p>`
+    post_chat.addEventListener('click',()=>{
+        commentPost(obj.id,post)
+    })
+    post_social.appendChild(post_chat)
+
+    const post_like = document.createElement('div')
+    post_like.innerHTML = `<span class="mdi mdi-thumb-up-outline"></span><p>${obj.LK}</p>`
+    post_like.className = 'post-social-chat'
+    post_like.addEventListener('click',()=>{
+        likePost(obj.id,post_like)
+    })
+    post_social.appendChild(post_like)
+
+    const post_comm = document.createElement('div')
+    post_comm.className = 'post-comm'
+    post.appendChild(post_comm)
+
+    return post
 }
 
 function addPost(obj){
 
     const screen = document.querySelector('#content-screen')
     for(let i=0; i<obj.length; i++){
-        const post = document.createElement('div')
-        post.id = `post-${obj[i].id}`
-        post.data = obj[i]
-        post.className = 'post'
-
-        const head = document.createElement('div')
-        head.className = 'post-head'
-
-        const head_left = document.createElement('div')
-        head_left.className = 'post-head-left'
-
-        const img = document.createElement('img')
-        img.className = 'post-head-img'
-        img.src = `assets/users/${obj[i].id_user}/perfil.jpg`
-        head_left.appendChild(img)
-
-        const head_name = document.createElement('div')
-        head_name.className = 'post-head-name'
-        head_name.innerHTML = obj[i].nome_usuario
-        head_left.appendChild(head_name)
-        head.appendChild(head_left)
-
-        const head_rigth = document.createElement('div')
-        head_rigth.className = 'post-head-left'
-
-        const subs_btn = document.createElement('div')
-        subs_btn.className = 'post-btn'
-        subs_btn.innerHTML = 'Subscribe'
-        head_rigth.appendChild(subs_btn)
-
-        const btn_more = document.createElement('div')
-        btn_more.className = 'btnMore'
-        btn_more.innerHTML = '...'
-        if(obj[i].owner=='1'){
-            btn_more.addEventListener('click',(e)=>{
-                const tbl = []
-                const mail = new Object
-                mail.label = 'Editar'
-                mail.link = ()=>{
-                    obj[i].action = 'EDT'
-                    openHTML('post_new.html','pop-up','Edição...',obj[i],800)
-                }            
-                tbl.push(mail)
-                const user = new Object
-                user.label = 'Deletar'
-                user.link = ()=>{
-                    if(confirm('Deseja deletar este post?')){
-                        delPost(obj[i].id,post)
-                    }
-                }            
-                tbl.push(user)
-                menuContext(tbl,e,0)
-            })
-        }
-        head_rigth.appendChild(btn_more)
-        head.appendChild(head_rigth)
-        post.appendChild(head)
-
-        const post_text = document.createElement('div')
-        post_text.className = 'post-text'
-        post_text.innerHTML = obj[i].texto
-        post.appendChild(post_text)
-
-        const post_time = document.createElement('div')
-        post_time.className = 'post-time'
-        post_time.innerHTML = `${obj[i].cadastro.viewXDate()} - ${obj[i].VW} Views`
-        post.appendChild(post_time)
-
-        const post_social = document.createElement('div')
-        post_social.className = 'post-social'
-        post.appendChild(post_social)
-
-        const post_chat = document.createElement('div')
-        post_chat.className = 'post-social-chat'
-        post_chat.innerHTML = `<span class="mdi mdi-chat-outline"></span><p>${obj[i].COMM}</p>`
-        post_chat.addEventListener('click',()=>{
-            commentPost(obj[i].id,post)
-        })
-        post_social.appendChild(post_chat)
-
-        const post_like = document.createElement('div')
-        post_like.innerHTML = `<span class="mdi mdi-thumb-up-outline"></span><p>${obj[i].LK}</p>`
-        post_like.className = 'post-social-chat'
-        post_like.addEventListener('click',()=>{
-            likePost(obj[i].id,post_like)
-        })
-        post_social.appendChild(post_like)
-
-        const post_comm = document.createElement('div')
-        post_comm.className = 'post-comm'
-        post.appendChild(post_comm)
-
-        screen.appendChild(post)
+        screen.appendChild(makePost(obj[i]))
     }
 
 

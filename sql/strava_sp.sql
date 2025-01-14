@@ -350,7 +350,7 @@ DELIMITER $$
     )
 	BEGIN    
 		SET @id_call = (SELECT IFNULL(id,0) FROM tb_usuario WHERE hash COLLATE utf8_general_ci = Ihash COLLATE utf8_general_ci LIMIT 1);		
-		SELECT *, (@id_call=id_user) AS owner FROM vw_post WHERE cadastro >= SUBDATE(Idate, 5) AND id_parent=0 LIMIT Istart,Istop;
+		SELECT *, (@id_call=id_user) AS owner FROM vw_post WHERE cadastro >= SUBDATE(Idate, 7) AND id_parent=0 LIMIT Istart,Istop;
         
         IF(@id_call != 0)THEN
 			REPLACE INTO tb_post_view (SELECT id, @id_call AS A FROM vw_post WHERE cadastro >= SUBDATE(Idate, 3) AND id_parent=0 LIMIT Istart,Istop);
@@ -401,6 +401,7 @@ DELIMITER $$
 					UPDATE tb_post SET nome=inome,texto=itexto,distancia=idistancia,tempo=itempo,tipo=itipo WHERE id=Iid;
                 END IF;
             END IF;
+            CALL sp_view_comm(Ihash,Iid_parent);
         END IF;
 	END $$
 DELIMITER ;
