@@ -62,7 +62,7 @@ function newComm(id,div){
         comm.appendChild(btn)
 
         btn.addEventListener('click',()=>{
-console.log(div)
+
             const params = new Object;
                 params.id = 0
                 params.id_parent = id
@@ -78,7 +78,7 @@ console.log(div)
                 for(let i=0; i<json.length; i++){
                     div.querySelector('.post-comm').appendChild(makePost(json[i]))
                 }
-
+//                div.appendChild(newComm(id,div))
             })
         })
         ta.focus()
