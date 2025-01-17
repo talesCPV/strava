@@ -11,7 +11,7 @@
   background-color: #fdfdfd;
   border-radius: 15px;
   border: solid 2px;
-  max-width: 95%;
+  max-width: 90%;
 }
 
 .web-title{
@@ -142,6 +142,7 @@
 
     .web-window{
       left: 50% !important;
+      max-width: 95%;
     }
 
   }
