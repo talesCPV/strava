@@ -186,14 +186,6 @@ function delFile(path){
     }); 
 }
 
-function NFeConf(file){
-    file = JSON.stringify(file)
-    saveFile(file,path='/../../NF/NFe/json/NFe.json')
-}
-
-function NFsConf(file){
-    saveFile(file,path='/../../NF/NFe/json/NFs.json')
-}
 
 function saveFile(file,path){
     const data = new URLSearchParams();
@@ -218,42 +210,31 @@ function saveFile(file,path){
 
 }
 
-function uploadNFe(txt, filename){
+function uploadGPX(fileID){
 
-    saveFile(txt,path=`/../../NF/NFe/txt/${filename}.txt`).then(()=>{
-        alert('NFe exportada com sucesso!!')
-        listNF('../NF/NFe/txt')
-        if (confirm(`Deseja lançar od boletos?`)) {
-            const data = main_data.fisc_nfe.data.config
-            for(let i=0; i<data.Y07.length; i++){
-                const pgto = new Object            
-                pgto.sac = data.E.xNome.split(' ')[0]
-                pgto.nf = data.B.nNF
-                pgto.ref =  (i+1).toString().padStart(2,"0") +'/'+ (data.Y07.length).toString().padStart(2,"0")
-                pgto.venc = data.Y07[i].Y07.date
-                pgto.val = data.Y07[i].Y07.valor
-                addBoleto(pgto)
-            }
-        }
-        document.querySelector('#tab-export').click()
-    })    
-}
+    const up_data = new FormData()
+    up_data.append("up_file",  document.getElementById(fileID).files[0])
+    up_data.append("user_id", localStorage.getItem('id_user'))
 
-function uploadNFs(txt, filename){
-
-    saveFile(txt,path=`/../../NF/NFs/txt/${filename}.txt`).then(()=>{
-        alert('NFs exportada com sucesso!!')
-        listNF('../NF/NFs/txt')
-        if (confirm(`Deseja lançar od boletos?`)) {
-/*
-            for(let i=0; i<pageData.NFs.fatura.length; i++){
-                addBoleto(pageData.NFs.fatura[i])
-            }
-*/
-        }
-        document.querySelector('#tab-export').click()
+    const myRequest = new Request("backend/upload_gpx.php",{
+        method : "POST",
+        body : up_data
     })
+
+    const myPromisse = new Promise((resolve,reject) =>{
+        fetch(myRequest)
+        .then(function (response){
+            if (response.status === 200) { 
+                resolve(response.text())
+            } else { 
+                reject(new Error("Houve algum erro na comunicação com o servidor"))
+            } 
+        })
+    })
+    return myPromisse
 }
+
+
 
 function uploadFile(file,path,filename){
 

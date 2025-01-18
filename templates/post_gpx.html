@@ -18,6 +18,20 @@
 </template>
 <script>
 
+    const pageData = main_data.post_gpx.data
+    const pageFunc = main_data.post_gpx.func
+    const pageScreen = document.querySelector('#card-post_gpx')
+
+    pageScreen.querySelector('#up_file').addEventListener('change',()=>{
+
+        const up = uploadGPX('up_file','teste.gpx')
+        up.then((resp)=>{
+            const json = JSON.parse(resp)
+
+            console.log(json)
+        })
+
+    })
 
 
 </script>

@@ -121,6 +121,23 @@ function makePost(obj){
     img.src = `assets/users/${obj.id_user}/perfil.jpg`
     head_left.appendChild(img)
 
+    img.addEventListener('click',(e)=>{
+        const tbl = []
+        const mail = new Object
+        mail.label = 'Ver Perfil'
+        mail.link = ()=>{
+            alert('ver Perfil')
+        }            
+        tbl.push(mail)
+        const user = new Object
+        user.label = 'Ver Treinos'
+        user.link = ()=>{
+            alert('ver Treinos')
+        }            
+        tbl.push(user)
+        menuContext(tbl,e)
+    })
+
     const head_name = document.createElement('div')
     head_name.className = 'post-head-name'
     head_name.innerHTML = obj.nome_usuario

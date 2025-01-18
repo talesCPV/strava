@@ -1,7 +1,7 @@
 
 async function openHTML(template='',where="main-screen",label="", data="",width='auto'){
 
-    width = width == 'auto' ? (document.querySelector('body').offsetWidth - 160)+'px' : width+'px'
+    width = width == 'auto' ? where =='web-window' ? '100%' : (document.querySelector('body').offsetWidth - 160)+'px' : width+'px'
 
     if(main_data.hasOwnProperty(template.split('.')[0])){
         closeModal(template.split('.')[0])
@@ -77,7 +77,7 @@ function newModal(title, content, width, id,type='pop-up'){
     mod_card.style.position = type=='web-window' ? 'fixed' :'absolute'
     mod_card.style.zIndex = upper_page.zIndex+1
     mod_card.style.margin = '0 auto'
-    mod_card.style.width = type=='web-window' ? '100%' : width
+    mod_card.style.width = width
     mod_card.style.top = type=='web-window' ? '50%' : upper_page.top+'px' 
     mod_card.style.left = type=='web-window' ? 'calc(50% + 41px)' : upper_page.left+'px'
     mod_card.style.overflow = 'auto'
