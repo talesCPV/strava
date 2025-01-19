@@ -11,27 +11,44 @@
 
     if (!is_dir($path)){
       mkdir($path, 0777, true);
-   
     }
 
-    $url = $path.$filename;   
+//    $url = $path.$filename;   
     if (file_exists($file)){    
-               
-      if(move_uploaded_file($file, $url)){      
-        $out = $filename;
+
+      if (!is_dir($path."gpx/")){
+        mkdir($path."gpx/", 0777, true);
+      }
+
+      if(move_uploaded_file($file, $path."gpx/".$filename)){      
+//        $out = $filename;
       }
 
      
-      $xml = simplexml_load_file($url);
-      $resp = array();
-      $resp[] = $xml->trk->name;
+      $xml = simplexml_load_file($path."gpx/".$filename);
+    
+      $object = new stdClass();
+      $object->name =  "".$xml->trk->name;
+      $object->time =  "".$xml->metadata->time;
+      $object->type =  "".$xml->trk->type;
+      $object->track = array();
       foreach($xml->trk->trkseg->trkpt as $trkpoint)
       {
-        $resp[] =  $trkpoint  ;
+        $object->track[] =  $trkpoint  ;
       }
 
-//      var_dump($resp);
-      $out = json_encode($resp);
+      $out = json_encode($object);
+
+      if (!is_dir($path."json/")){
+        mkdir($path."json/", 0755, true);
+      }
+
+      $json =  $path."json/".explode(".",$filename)[0].".json"; 
+ 
+      $fp = fopen($json, "w");
+      fwrite($fp,$out);
+      fclose($fp); 
+
 
 
     }
