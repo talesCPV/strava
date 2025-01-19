@@ -31,6 +31,30 @@ function queryDB(params,cod){
     });      
 }
 
+function showDir(path){
+
+    const data = new URLSearchParams();        
+        data.append("dir",path);      
+
+    const myRequest = new Request("backend/show_dir.php",{
+        method : "POST",
+        body : data
+    })
+
+    const myPromisse = new Promise((resolve,reject) =>{
+        fetch(myRequest)
+        .then(function (response){
+            if (response.status === 200) { 
+                resolve(response.text());             
+            } else { 
+                reject(new Error("Houve algum erro na comunicação com o servidor"));                    
+            } 
+        })
+    })  
+
+    return myPromisse
+
+}
 
 function backFunc(params,cod){
     const data = new URLSearchParams();        

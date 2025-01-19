@@ -1,0 +1,36 @@
+<template>
+    <style>
+        .metadata{
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            max-width: 200px;
+        }
+    </style>
+
+    <div class="metadata">
+        <div class="pic">
+            <img src="/strava/assets/icons/user_default.png" alt="">
+        </div>
+        <div class="name">
+            <p>Teste</p>
+        </div>
+    </div>
+
+
+    <div class="legenda">
+
+    </div>
+
+</template>
+<script>
+
+    const pageData = main_data.usr_perfil.data
+    const pageFunc = main_data.usr_perfil.func
+    const pageScreen = document.querySelector('#card-usr_perfil')
+
+
+    console.log(pageData)
+
+</script>

@@ -248,11 +248,22 @@
 
         const url = (window.location).toString().split('/')
         const rota = url[url.length-1]
-        console.log()
-        if(rota == ''){
-            getPost(today.getFullDateTime())
-        }else{
-            alert('Rotear para '+rota)
+        getPost(today.getFullDateTime())
+        if(rota != ''){
+            const rt = rota.split('-')
+            try{
+                switch(rt[0]){
+                case 'perfil':
+                    openHTML(`usr_perfil.html`,'web-window','',{'id': rt[1]})
+                break;
+                case 'track':
+                    openHTML(`usr_track.html`,'web-window','',{'id': rt[1]})
+                break;
+            }
+
+            }catch{
+                null
+            }            
         }
     }
 

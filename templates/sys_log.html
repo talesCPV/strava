@@ -24,23 +24,7 @@
 
     function getLog(){
 
-        const data = new URLSearchParams();        
-            data.append("dir",`config/log/`);
-        const myRequest = new Request("backend/show_dir.php",{
-            method : "POST",
-            body : data
-        })
-        const myPromisse = new Promise((resolve,reject) =>{
-            fetch(myRequest)
-            .then(function (response){
-                if (response.status === 200) { 
-                    resolve(response.text());             
-                } else { 
-                    reject(new Error("Houve algum erro na comunicação com o servidor"));                    
-                } 
-            })
-        })  
-        myPromisse.then((txt)=>{
+        showDir(`config/log/`).then((txt)=>{
             const json = JSON.parse(txt)
             const combo = document.querySelector('#cmbLog')
             for(let i=json.length-1; i>=2; i--){

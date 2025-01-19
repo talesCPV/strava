@@ -10,6 +10,7 @@
         "USR-2"  => 'CALL sp_updatePass(@hash,"x00","x01");', // NOME, PASS
         "USR-3"  => 'CALL sp_check_usr_mail(@hash);', //
         "USR-4"  => 'CALL sp_newUser("x00","x01","x02","x03");', // NOME,EMAIL, PASS, ASAAS_ID
+        "USR-5"  => 'CALL sp_get_usr_name(x00);', // USR-ID
 
         /* CALENDAR */
         "CAL-0"  => 'CALL sp_view_calendar(@hash,"x00","x01");', // DT_INI, DT_FIN

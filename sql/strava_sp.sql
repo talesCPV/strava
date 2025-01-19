@@ -138,6 +138,16 @@ DELIMITER $$
 	END $$
 DELIMITER ;
 
+ DROP PROCEDURE IF EXISTS sp_get_usr_name;
+DELIMITER $$
+	CREATE PROCEDURE sp_get_usr_name(
+		IN Iid_user int(11)
+    )
+	BEGIN    
+		SELECT nome FROM tb_usuario WHERE id=Iid_user;
+	END $$
+DELIMITER ;
+
  DROP PROCEDURE IF EXISTS sp_updatePass;
 DELIMITER $$
 	CREATE PROCEDURE sp_updatePass(	

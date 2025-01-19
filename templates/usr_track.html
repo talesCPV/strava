@@ -1,0 +1,76 @@
+<template>
+    <style>
+        .metadata{
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            max-width: 200px;
+        }
+
+        .metadata #usr-tracks{
+            border-radius: 50%;
+            max-width: 100px;
+        }
+
+    </style>
+
+    <div class="metadata">
+        <div class="pic">
+            <img id="usr-tracks" src="/strava/assets/icons/user_default.png" alt="">
+        </div>
+        <div class="name">
+            <p id="usr-name">Teste</p>
+        </div>
+    </div>
+
+
+    <div class="legenda">
+
+    </div>
+
+</template>
+<script>
+
+    const pageData = main_data.usr_track.data
+    const pageFunc = main_data.usr_track.func
+    const pageScreen = document.querySelector('#card-usr_track')
+
+
+    function pageStart(){
+        const back = backFunc({'filename':`../assets/users/${pageData.id}/perfil.jpg`},1)
+        back.then((resp)=>{           
+            const imgExist = JSON.parse(resp)
+            const img = document.querySelector('#usr-tracks')
+            img.src =  imgExist ? `assets/users/${pageData.id}/perfil.jpg` : 'strava/assets/icons/strava.svg'
+        }) 
+
+        showDir(`gpx/${pageData.id}/json/`).then((txt)=>{
+            const json = JSON.parse(txt)
+            for(let i=2; i<json.length; i++){
+                console.log(json[i])
+            }
+
+        })   
+
+
+    }
+
+
+    pageFunc.getUsername = (id)=>{
+        const params = new Object;
+        params.id_user = pageData.id
+        const myPromisse = queryDB(params,'USR-5');
+
+        myPromisse.then((resolve)=>{
+            if(resolve.trim() != ""){
+                pageScreen.querySelector('#usr-name').innerHTML = JSON.parse(resolve)[0].nome
+                 
+        
+            }        
+        })
+    }
+
+    pageStart()
+
+</script>

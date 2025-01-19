@@ -26,7 +26,6 @@ DROP VIEW IF EXISTS vw_post;
     (SELECT COUNT(*) FROM tb_post_view WHERE id_post=PST.id) AS VW
 	FROM tb_post AS PST
     INNER JOIN tb_usuario AS USR
-    ON PST.id_user = USR.id
-    ORDER BY cadastro DESC;
+    ON PST.id_user = USR.id;
 
 SELECT * FROM vw_post;
