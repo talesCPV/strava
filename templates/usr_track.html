@@ -53,6 +53,7 @@
 
         })   
 
+        pageFunc.getUsername()
 
     }
 
@@ -65,8 +66,6 @@
         myPromisse.then((resolve)=>{
             if(resolve.trim() != ""){
                 pageScreen.querySelector('#usr-name').innerHTML = JSON.parse(resolve)[0].nome
-                 
-        
             }        
         })
     }
