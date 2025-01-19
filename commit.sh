@@ -19,6 +19,7 @@ then
     git add style/
     git add templates/
     git add index.html
+    git add .htaccess
     git add commit.sh
 
     git commit -m "by_script"

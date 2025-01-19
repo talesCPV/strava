@@ -126,13 +126,13 @@ function makePost(obj){
         const mail = new Object
         mail.label = 'Ver Perfil'
         mail.link = ()=>{
-            alert('ver Perfil')
+            window.location.href = (window.location).toString()+'user-'+obj.id_user;
         }            
         tbl.push(mail)
         const user = new Object
         user.label = 'Ver Treinos'
         user.link = ()=>{
-            alert('ver Treinos')
+            window.location.href = (window.location).toString()+'tracks-'+obj.id_user;
         }            
         tbl.push(user)
         menuContext(tbl,e)

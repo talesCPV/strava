@@ -22,17 +22,32 @@
         $object->time =  "".$xml->metadata->time;
         $object->type =  "".$xml->trk->type;
         $object->track = array();
-        foreach($xml->trk->trkseg->trkpt as $trkpoint)
-        {
+
+        include_once "gps.php";
+
+        $dist = 0;
+        $acum = 0;
+        $lat = 0;
+        foreach($xml->trk->trkseg->trkpt as $trkpoint){
           $point = new stdClass();
-          $point->lat = $trkpoint;
-          $point->lon = $trkpoint->lon;
+          $point->lat = $trkpoint->attributes()->lat."";
+          $point->lon = $trkpoint->attributes()->lon."";
           $point->ele = "".$trkpoint->ele;
           $point->time = "".$trkpoint->time;
-          $point->pto = $trkpoint;
+
+          if($last){
+            $dist += distance($last,$point);
+
+            if($point->ele - $last->ele > 0.01){
+              $acum += $point->ele - $last->ele;
+            }
+          }
+
+          $point->dist = $dist;
+          $point->acum = $acum;
 
           $object->track[] = $point;
-//          $object->track[] =  $trkpoint;
+          $last = $point;
         }
 
         $out = json_encode($object);

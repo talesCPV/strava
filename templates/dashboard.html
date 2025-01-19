@@ -241,6 +241,21 @@
 
     main_data.dashboard.startPost = 0
     main_data.dashboard.limitPost = 10
-    getPost(today.getFullDateTime())
+
+
+
+    function route(){
+
+        const url = (window.location).toString().split('/')
+        const rota = url[url.length-1]
+        console.log()
+        if(rota == ''){
+            getPost(today.getFullDateTime())
+        }else{
+            alert('Rotear para '+rota)
+        }
+    }
+
+route()
 
 </script>
