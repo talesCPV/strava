@@ -14,7 +14,11 @@ if (IsSet($_POST["cod"]) && IsSet($_POST["params"])){
             }else{
                 print "false";
             }
-            break;        
+            break;
+        case 2: // Return User-id by hash
+            $hash = $params['hash'];
+
+            break;
     }
 
 

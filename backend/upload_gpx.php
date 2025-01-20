@@ -19,7 +19,7 @@
 
         $object = new stdClass();
         $object->name =  "".$xml->trk->name;
-        $object->time =  "".$xml->metadata->time;
+        $object->date =  "".$xml->metadata->time;
         $object->type =  "".$xml->trk->type;
         $object->track = array();
 
@@ -27,28 +27,52 @@
 
         $dist = 0;
         $acum = 0;
-        $lat = 0;
+        $time = 0;
+        $mov_time = 0;
         foreach($xml->trk->trkseg->trkpt as $trkpoint){
           $point = new stdClass();
           $point->lat = $trkpoint->attributes()->lat."";
           $point->lon = $trkpoint->attributes()->lon."";
           $point->ele = "".$trkpoint->ele;
           $point->time = "".$trkpoint->time;
+          
+          $hour = strtotime($trkpoint->time);
 
           if($last){
-            $dist += distance($last,$point);
 
-            if($point->ele - $last->ele > 0.01){
-              $acum += $point->ele - $last->ele;
+            $move_dist = distance($last,$point);
+            $time += $hour - $last->hour;
+
+            if($move_dist > 0.001 ){
+              $dist += $move_dist;
+              $mov_time += $hour - $last->hour;
+
+              if($point->ele > $last->ele ){
+                $acum += $point->ele - $last->ele;
+              }
             }
           }
 
-          $point->dist = $dist;
-          $point->acum = $acum;
+          $point->dist = number_format((float)$dist, 2, '.', '');
+          $point->acum = number_format((float)$acum, 2, '.', '');
+          $point->time_sec = $time;
+          $point->mov_time = $mov_time;
 
           $object->track[] = $point;
           $last = $point;
+          $last->hour = $hour;
         }
+
+        function timeFormat($time){
+          $h = intdiv($time/3600,1);
+          $m = $time/3600 - $h;
+          return str_pad($h,2,"0",STR_PAD_LEFT).":".str_pad((round(($m- intdiv($m,1))*60)),2,"0",STR_PAD_LEFT);
+        }
+
+        $object->distance =  number_format((float)$dist, 2, '.', '');
+        $object->acumulado =  number_format((float)$acum, 2, '.', '');
+        $object->time =  timeFormat($time);
+        $object->mov_time =  timeFormat($mov_time);
 
         $out = json_encode($object);
 
@@ -64,6 +88,7 @@
       }
     }
   }
+  
   print $out;
 
 ?>

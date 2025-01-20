@@ -5,7 +5,7 @@ function setPost(obj){
 
 
 function delPost(id,div){                   
-    setPost({0:id,1:0,2:'',3:'',4:'',5:0,6:''}).then(()=>{
+    setPost({0:id,1:0,2:'',3:''}).then(()=>{
         div.remove()
     })
 }
@@ -67,9 +67,7 @@ function newComm(id,div){
                 params.id_parent = id
                 params.nome = 'txt'
                 params.texto = ta.value
-                params.distancia = 0
-                params.tempo = 0
-                params.tipo = 'txt'
+
             setPost(params).then((resolve)=>{
                 const json =  JSON.parse(resolve)
                 console.log(json)

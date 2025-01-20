@@ -38,11 +38,11 @@
 
 
     function pageStart(){
-        const back = backFunc({'filename':`../assets/users/${pageData.id}/perfil.jpg`},1)
+        const back = backFunc({'filename':`../assets/users/${Number(pageData.id)}/perfil.jpg`},1)
         back.then((resp)=>{           
             const imgExist = JSON.parse(resp)
             const img = document.querySelector('#usr-tracks')
-            img.src =  imgExist ? `assets/users/${pageData.id}/perfil.jpg` : 'strava/assets/icons/strava.svg'
+            img.src =  imgExist ? `assets/users/${Number(pageData.id)}/perfil.jpg` : '/strava/assets/icons/user_default.png'
         }) 
 
         showDir(`gpx/${pageData.id}/json/`).then((txt)=>{
@@ -65,7 +65,11 @@
 
         myPromisse.then((resolve)=>{
             if(resolve.trim() != ""){
-                pageScreen.querySelector('#usr-name').innerHTML = JSON.parse(resolve)[0].nome
+                try{
+                    pageScreen.querySelector('#usr-name').innerHTML = JSON.parse(resolve)[0].nome
+                }catch{
+                    pageScreen.querySelector('#usr-name').innerHTML = 'Usuário Inesistente!'
+                }
             }        
         })
     }

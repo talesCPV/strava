@@ -392,23 +392,53 @@ DELIMITER $$
 		IN Iid int(11),
         IN Iid_parent int(11),
         IN Inome varchar(30),
-		IN Itexto varchar(512),
-		IN Idistancia double,
-		IN Itempo int,
-		IN Itipo varchar(3)
+		IN Itexto varchar(512)
     )
 	BEGIN    
 		CALL sp_allow(Iallow,Ihash);        
-		IF(@allow)THEN
+		IF(@allow)THEN        
+			SET @id_call = (SELECT IFNULL(id,0) FROM tb_usuario WHERE hash COLLATE utf8_general_ci = Ihash COLLATE utf8_general_ci LIMIT 1);
+			IF(Inome="")THEN
+                DELETE FROM tb_post_like WHERE id_post=Iid;
+                DELETE FROM tb_post_view WHERE id_post=Iid;
+				DELETE FROM tb_post WHERE id=Iid OR Iid_parent=Iid;
+            ELSE
+				IF(Iid=0)THEN
+					INSERT INTO tb_post (id_user,id_parent,nome,texto,tipo)
+                    VALUES(@id_call,Iid_parent,Inome,Itexto,"TXT");
+                ELSE
+					UPDATE tb_post SET nome=inome,texto=itexto WHERE id=Iid;
+                END IF;
+            END IF;
+            CALL sp_view_comm(Ihash,Iid_parent);
+        END IF;
+	END $$
+DELIMITER ;
+
+ DROP PROCEDURE IF EXISTS sp_set_track;
+DELIMITER $$
+	CREATE PROCEDURE sp_set_post(
+		IN Ihash varchar(64),
+		IN Iid int(11),
+        IN Inome varchar(30),
+        IN Idist double,
+        IN Imov_time INT,
+        IN Itime INT,
+        IN Ielev INT,
+        IN Idate_trk datetime
+    )
+	BEGIN    
+		CALL sp_allow(Iallow,Ihash);        
+		IF(@allow)THEN        
 			SET @id_call = (SELECT IFNULL(id,0) FROM tb_usuario WHERE hash COLLATE utf8_general_ci = Ihash COLLATE utf8_general_ci LIMIT 1);
 			IF(Inome="")THEN
 				DELETE FROM tb_post WHERE id=Iid OR Iid_parent=Iid;
             ELSE
 				IF(Iid=0)THEN
-					INSERT INTO tb_post (id_user,id_parent,nome,texto,distancia,tempo,tipo)
-                    VALUES(@id_call,Iid_parent,Inome,Itexto,Idistancia,Itempo,Itipo);
+					INSERT INTO tb_post (id_user,id_parent,nome,texto,tipo)
+                    VALUES(@id_call,Iid_parent,Inome,Itexto,"TXT");
                 ELSE
-					UPDATE tb_post SET nome=inome,texto=itexto,distancia=idistancia,tempo=itempo,tipo=itipo WHERE id=Iid;
+					UPDATE tb_post SET nome=inome,texto=itexto WHERE id=Iid;
                 END IF;
             END IF;
             CALL sp_view_comm(Ihash,Iid_parent);

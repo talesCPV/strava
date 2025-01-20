@@ -54,18 +54,11 @@
             params.id_parent = pageData.action == 'COMM' ? pageData.id : 0
             params.nome = 'txt'
             params.texto = pageScreen.querySelector('#edtMsg').value
-            params.distancia = 0
-            params.tempo = 0
-            params.tipo = 'txt'
         setPost(params).then((resolve)=>{
             if(newReg){
                 getPost(today.getFullDateTime())
             }else{             
-                if(pageData.action == 'COMM'){
-
-                }else{
-                    document.querySelector('#content-screen').querySelector(`#post-${pageData.id}`).querySelector('.post-text').innerHTML = pageScreen.querySelector('#edtMsg').value
-                }
+                document.querySelector('#content-screen').querySelector(`#post-${pageData.id}`).querySelector('.post-text').innerHTML = pageScreen.querySelector('#edtMsg').value
             }
             closeModal('post_new')
         })
