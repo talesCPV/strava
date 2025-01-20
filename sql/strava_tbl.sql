@@ -58,6 +58,7 @@ CREATE TABLE tb_post (
     time int DEFAULT 0,
     elev int DEFAULT 0,
     date_trk datetime DEFAULT NULL,
+    file varchar(256) DEFAULT "",
     cadastro TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     tipo varchar(3) DEFAULT "TXT",
     PRIMARY KEY (id)

@@ -2,11 +2,34 @@
 
   $out = "";
 
-  if (IsSet($_FILES["up_file"]) && IsSet($_POST["user_id"])){
+  if (IsSet($_FILES["up_file"]) && IsSet($_POST["hash"])){
 
     $file = $_FILES["up_file"]["tmp_name"];
     $filename = $_FILES["up_file"]["name"];
-    $path = getcwd().'/../gpx/'.$_POST["user_id"].'/';
+
+
+    $user_hash = $_POST["hash"];
+    $user_id = "";
+    $user_name = "";
+    $user_email = "";
+
+    include "connect.php";
+    $query = 'SELECT id,nome,email FROM tb_usuario WHERE hash  = "'.$user_hash.'" LIMIT 1;';
+
+    $result = mysqli_query($conexao, $query);
+
+    if(is_object($result)){      
+        if($result->num_rows > 0){			
+            $r = mysqli_fetch_assoc($result);
+            $user_id = $r["id"];
+            $user_name = $r["nome"];
+            $user_email = $r["email"];
+        }        
+    }
+
+    $conexao->close(); 
+
+    $path = getcwd().'/../gpx/'.$user_email.'/';
 
     if (file_exists($file)){
 
@@ -21,7 +44,7 @@
         $object->name =  "".$xml->trk->name;
         $object->date =  "".$xml->metadata->time;
         $object->type =  "".$xml->trk->type;
-        $object->track = array();
+        $object->gps = array();
 
         include_once "gps.php";
 
@@ -58,7 +81,7 @@
           $point->time_sec = $time;
           $point->mov_time = $mov_time;
 
-          $object->track[] = $point;
+          $object->gps[] = $point;
           $last = $point;
           $last->hour = $hour;
         }
@@ -80,15 +103,33 @@
           mkdir($path."json/", 0755, true);
         }
 
-        $json =  $path."json/".explode(".",$filename)[0].".json";
+        $file = explode(".",$filename)[0].".json";
+        $json =  $path."json/".$file;
+
+        if(!file_exists($json)){          
+          setPostTrack($user_hash,$object->name,$object->distance,$mov_time,$time,$object->acumulado,$object->date,$file);
+        }
 
         $fp = fopen($json, "w");
         fwrite($fp,$out);
         fclose($fp);
+
+
       }
     }
   }
-  
+
+  function setPostTrack($hash,$name,$dist,$mov_time,$time,$acum,$date,$file){
+
+    $query = 'CALL sp_set_track("'. $hash .'",0,"'. $name .'","'. $dist .'",'. $mov_time .','. $time .','. $acum.',"'.$date.'","'.$file.'");';
+
+    include "connect.php";
+    $result = mysqli_query($conexao, $query);
+    $conexao->close(); 
+
+  }
+
+
   print $out;
 
 ?>

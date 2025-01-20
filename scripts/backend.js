@@ -238,7 +238,7 @@ function uploadGPX(fileID){
 
     const up_data = new FormData()
     up_data.append("up_file",  document.getElementById(fileID).files[0])
-    up_data.append("user_id", localStorage.getItem('id_user'))
+    up_data.append("hash", localStorage.getItem('hash'))
 
     const myRequest = new Request("backend/upload_gpx.php",{
         method : "POST",

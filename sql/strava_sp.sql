@@ -417,7 +417,7 @@ DELIMITER ;
 
  DROP PROCEDURE IF EXISTS sp_set_track;
 DELIMITER $$
-	CREATE PROCEDURE sp_set_post(
+	CREATE PROCEDURE sp_set_track(
 		IN Ihash varchar(64),
 		IN Iid int(11),
         IN Inome varchar(30),
@@ -425,24 +425,20 @@ DELIMITER $$
         IN Imov_time INT,
         IN Itime INT,
         IN Ielev INT,
-        IN Idate_trk datetime
+        IN Idate_trk datetime,
+        IN Ifile varchar(256)
     )
-	BEGIN    
-		CALL sp_allow(Iallow,Ihash);        
-		IF(@allow)THEN        
-			SET @id_call = (SELECT IFNULL(id,0) FROM tb_usuario WHERE hash COLLATE utf8_general_ci = Ihash COLLATE utf8_general_ci LIMIT 1);
-			IF(Inome="")THEN
-				DELETE FROM tb_post WHERE id=Iid OR Iid_parent=Iid;
-            ELSE
-				IF(Iid=0)THEN
-					INSERT INTO tb_post (id_user,id_parent,nome,texto,tipo)
-                    VALUES(@id_call,Iid_parent,Inome,Itexto,"TXT");
-                ELSE
-					UPDATE tb_post SET nome=inome,texto=itexto WHERE id=Iid;
-                END IF;
-            END IF;
-            CALL sp_view_comm(Ihash,Iid_parent);
-        END IF;
+	BEGIN
+		SET @id_call = (SELECT IFNULL(id,0) FROM tb_usuario WHERE hash COLLATE utf8_general_ci = Ihash COLLATE utf8_general_ci LIMIT 1);
+		IF(Inome!="")THEN
+			IF(Iid=0)THEN
+				INSERT INTO tb_post (id_user,id_parent,nome,dist,mov_time,time,elev,date_trk,tipo,file)
+				VALUES(@id_call,0,Inome,Idist,Imov_time,Itime,Ielev,Idate_trk,"GPX",Ifile);
+			ELSE
+				UPDATE tb_post SET dist=Idist,mov_time=Imov_time,time=Itime,elev=Ielev,date_trk=Idate_trk WHERE id=Iid;
+			END IF;
+		END IF;
+-- 		CALL sp_view_comm(Ihash,0);
 	END $$
 DELIMITER ;
 

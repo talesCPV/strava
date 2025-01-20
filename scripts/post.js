@@ -103,6 +103,7 @@ function commentPost(id,div){
 }
 
 function makePost(obj){
+console.log(obj) 
     const post = document.createElement('div')
     post.id = `post-${obj.id}`
     post.data = obj
@@ -178,10 +179,40 @@ function makePost(obj){
     head.appendChild(head_rigth)
     post.appendChild(head)
 
-    const post_text = document.createElement('div')
-    post_text.className = 'post-text'
-    post_text.innerHTML = obj.texto
-    post.appendChild(post_text)
+    if(obj.tipo == 'GPX'){
+        const post_track = document.createElement('div')
+        post_track.className = 'post-track'
+        post_track.innerHTML = `
+                        <div class="track-name">
+                    <p>${obj.nome}</p>
+                </div>
+                <div class="track-data">
+                    <div >
+                        <p>distância</p>
+                        <p>${obj.dist}</p>
+                        <p>Km</p>
+                    </div>
+                    <div >
+                        <p>Elevação</p>
+                        <p>${obj.elev}</p>
+                        <p>m</p>
+                    </div>
+                    <div >
+                        <p>Tempo</p>
+                        <p>04:25</p>
+                        <p>h</p>
+                    </div>
+                </div>
+        `
+        post.appendChild(post_track)
+    }else{
+        const post_text = document.createElement('div')
+        post_text.className = 'post-text'
+        post_text.innerHTML = obj.texto
+        post.appendChild(post_text)
+    
+    }
+
 
     const post_time = document.createElement('div')
     post_time.className = 'post-time'

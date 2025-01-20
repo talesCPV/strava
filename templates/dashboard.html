@@ -24,6 +24,31 @@
             left: 10px;
         }
 
+        .track-name{
+            display: flex;
+            justify-content: center;
+            font-size: 1.3em;
+            padding-bottom: 20px;
+        }
+
+        .track-data{
+            display: flex;
+            flex-direction: row;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 25px;
+        }
+
+        .track-data div{
+            display: flex;
+            flex-direction: row;
+            gap: 5px;
+        }
+
+        .track-data div p:nth-child(2){
+            font-size: 2em;
+
+        }
 
     </style>
          
@@ -78,7 +103,7 @@
                 </div>         
             </div>
         </div>
-
+    -->
         <div class="post">
             <div class="post-head">
                 <div class="post-head-left">
@@ -90,10 +115,28 @@
                     <div class="btnMore">...</div>
                 </div>
             </div>
-            <div class="post-text">
-                Lorem ipsum dolor sit amet. Id voluptas harum et ullam corrupti et doloremque rerum vel ipsa natus vel adipisci nisi. Et incidunt molestiae et ducimus incidunt in nostrum reiciendis ut veniam quia ea impedit perferendis in facere voluptatem 33 alias eaque. 
+            <div class="post-track">
+                <div class="track-name">
+                    <p>20/01/2025 - Teste de Post</p>
+                </div>
+                <div class="track-data">
+                    <div >
+                        <p>distância</p>
+                        <p>44,15</p>
+                        <p>Km</p>
+                    </div>
+                    <div >
+                        <p>Elevação</p>
+                        <p>815</p>
+                        <p>m</p>
+                    </div>
+                    <div >
+                        <p>Tempo</p>
+                        <p>04:25</p>
+                        <p>h</p>
+                    </div>
+                </div>
             </div>
-                <img class="post-img" src="posts/img1.jpg" alt="">
             <div class="post-time">
                 00:00 PM Oct-10,2024 - 200 Views
             </div>
@@ -109,7 +152,7 @@
                             
             </div>
         </div>
--->        
+      
     </div>
     
 </template>
