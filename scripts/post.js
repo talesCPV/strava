@@ -102,6 +102,18 @@ function commentPost(id,div){
     }
 }
 
+function new_element(tipo,innerHTML='',cls=0,id=0){
+    const el = document.createElement(tipo)
+    el.innerHTML = innerHTML
+    if(cls){
+        el.className = cls
+    }
+    if(id){
+        el.id = id
+    }
+    return el
+}
+
 function makePost(obj){
 console.log(obj) 
     const post = document.createElement('div')
@@ -179,36 +191,41 @@ console.log(obj)
     head.appendChild(head_rigth)
     post.appendChild(head)
 
+
     if(obj.tipo == 'GPX'){
-        const post_track = document.createElement('div')
-        post_track.className = 'post-track'
-        post_track.innerHTML = `
-                        <div class="track-name">
-                    <p>${obj.nome}</p>
-                </div>
-                <div class="track-data">
-                    <div >
-                        <p>distância</p>
-                        <p>${obj.dist}</p>
-                        <p>Km</p>
-                    </div>
-                    <div >
-                        <p>Elevação</p>
-                        <p>${obj.elev}</p>
-                        <p>m</p>
-                    </div>
-                    <div >
-                        <p>Tempo</p>
-                        <p>04:25</p>
-                        <p>h</p>
-                    </div>
-                </div>
-        `
+        const mov_h = Math.floor(obj.mov_time/3600).toString().padStart(2,0)
+        const mov_m = Math.round(((obj.mov_time/3600)%1) * 60).toString().padStart(2,0)
+
+        const post_track = new_element('div','','post-track')
+
+        const track_name = new_element('div','','track-name')
+        post_track.appendChild(track_name)
+        track_name.appendChild(new_element('p',obj.nome))
+
+        const track_data = new_element('div','','track-data')
+        post_track.appendChild(track_data)
+
+        const dist = new_element('div')
+        dist.appendChild(new_element('p','distância'))
+        dist.appendChild(new_element('p',obj.dist))
+        dist.appendChild(new_element('p','Km'))
+        track_data.appendChild(dist)
+
+        const ele = new_element('div')
+        ele.appendChild(new_element('p','Elevação'))
+        ele.appendChild(new_element('p',obj.elev))
+        ele.appendChild(new_element('p','m'))
+        track_data.appendChild(ele)        
+
+        const mov = new_element('div')
+        mov.appendChild(new_element('p','Tempo Mov.'))
+        mov.appendChild(new_element('p',`${mov_h}:${mov_m}`))
+        mov.appendChild(new_element('p','h'))
+        track_data.appendChild(mov)   
+
         post.appendChild(post_track)
     }else{
-        const post_text = document.createElement('div')
-        post_text.className = 'post-text'
-        post_text.innerHTML = obj.texto
+        const post_text = new_element('div',obj.texto, 'post-text')
         post.appendChild(post_text)
     
     }
@@ -216,7 +233,7 @@ console.log(obj)
 
     const post_time = document.createElement('div')
     post_time.className = 'post-time'
-    post_time.innerHTML = `${obj.cadastro.viewXDate()} - ${obj.VW} Views`
+    post_time.innerHTML = `${obj.tipo == 'GPX'? obj.date_trk.viewXDate() : obj.cadastro.viewXDate()} - ${obj.VW} Views`
     post.appendChild(post_time)
 
     const post_social = document.createElement('div')
