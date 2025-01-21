@@ -19,7 +19,7 @@
     <fieldset class="show-map">
         <legend>Mapa</legend>
         <div id="map"></div>
-
+        <div id="layer">Change Layer</div>
     </fieldset>
 
     <div class="legenda">
@@ -32,8 +32,13 @@
     const pageData = main_data.post_track.data
     const pageFunc = main_data.post_track.func
     const pageScreen = document.querySelector('#card-post_track')
+
     var map
-    
+    var layer
+
+    var mapUrl = 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png'
+    var satUrl = 'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}'
+
     function pageStart(){
 
         getFile(pageData.file).then((resp)=>{
@@ -50,11 +55,12 @@
 
     function loadMap(lat,lon){
         map = L.map('map').setView([lat,lon], 13);
-
-        L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        
+        layer = L.tileLayer(mapUrl, {
             maxZoom: 18,
-            attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+            attribution: 'Strava Clone 1.0'
         }).addTo(map);
+
     }
 
     function drawTrack(pts){
@@ -65,6 +71,20 @@
         var polygon = L.polygon(points).addTo(map);
     }
 
+    function setLayer(layer_url){
+
+    }
+
+    pageScreen.querySelector('#layer').addEventListener('click',()=>{        
+
+        map.removeLayer(layer);
+
+        layer = L.tileLayer(satUrl, {
+            maxZoom: 18,
+            attribution: 'Strava Clone 1.0'
+        }).addTo(map);
+
+    })
 
 
     pageStart()
