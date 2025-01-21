@@ -3,7 +3,7 @@
   $out = [];
 
 	if (IsSet($_POST["path"])){
-	  $path = getcwd().$_POST["path"];   
+	  $path = $_POST["path"];   
 //echo $path;    
       if (file_exists($path)) {
           $fp = fopen($path, "r");

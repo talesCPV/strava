@@ -5,14 +5,18 @@ var main_data = new Object
 var today = new Date()
 var meses = ['Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho', 'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro']
 var semana = ['Dom','Seg','Ter','Qua','Qui','Sex','Sab']
-var nfe_rules = 0
-getFile('/../config/NFe_rules.json').then((json)=>{
-    nfe_rules = JSON.parse(json)
-})
-var nfs_rules = {}
-getFile('/../config/NFs_rules.json').then((json)=>{
-    nfs_rules = JSON.parse(json)
-})
+
+/* Load Script em Runtime */
+
+function loadScript(url){
+
+    var script = document.createElement("script")
+    script.setAttribute("type", "text/javascript")
+    script.setAttribute("src", url)
+    document.getElementsByTagName("head")[0].appendChild(script)
+    
+}
+
 
 /*  FUNCTIONS  */
 

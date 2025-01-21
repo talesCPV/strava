@@ -82,6 +82,43 @@
     width: calc(100% + 8px);
 }
 
+.post-track{
+    pointer-events: auto;
+    border-radius: 15px;
+    padding: 10px;
+    cursor: pointer;
+}
+
+.post:has(.post-track:hover){
+    background-color: #9dc8eece;
+    opacity: 70%;
+}        
+
+.track-name{
+    display: flex;
+    justify-content: center;
+    font-size: 1.3em;
+    padding-bottom: 20px;
+}
+
+.track-data{
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 25px;
+}
+
+.track-data div{
+    display: flex;
+    flex-direction: row;
+    gap: 5px;
+}
+
+.track-data div p:nth-child(2){
+    font-size: 2em;
+}
+
 .comments{
     align-items: end;
 }

@@ -1,8 +1,19 @@
 
+function new_element(tipo,innerHTML='',cls=0,id=0){
+    const el = document.createElement(tipo)
+    el.innerHTML = innerHTML
+    if(cls){
+        el.className = cls
+    }
+    if(id){
+        el.id = id
+    }
+    return el
+}
+
 function setPost(obj){
     return  queryDB(obj,'POST-1')
 }
-
 
 function delPost(id,div){                   
     setPost({0:id,1:0,2:'',3:''}).then(()=>{
@@ -75,7 +86,6 @@ function newComm(id,div){
                 for(let i=0; i<json.length; i++){
                     div.querySelector('.post-comm').appendChild(makePost(json[i]))
                 }
-//                div.appendChild(newComm(id,div))
             })
         })
         ta.focus()
@@ -96,39 +106,19 @@ function commentPost(id,div){
                 comments.appendChild(makePost(json[i]))         
             }
             comments.appendChild(newComm(id,div))
-
-
         })
     }
 }
 
-function new_element(tipo,innerHTML='',cls=0,id=0){
-    const el = document.createElement(tipo)
-    el.innerHTML = innerHTML
-    if(cls){
-        el.className = cls
-    }
-    if(id){
-        el.id = id
-    }
-    return el
-}
-
 function makePost(obj){
-console.log(obj) 
-    const post = document.createElement('div')
-    post.id = `post-${obj.id}`
-    post.data = obj
-    post.className = 'post'
 
-    const head = document.createElement('div')
-    head.className = 'post-head'
+    const post = new_element('div','','post',`post-${obj.id}`)
 
-    const head_left = document.createElement('div')
-    head_left.className = 'post-head-left'
+    const head = new_element('div','','post-head')
 
-    const img = document.createElement('img')
-    img.className = 'post-head-img'
+    const head_left = new_element('div','','post-head-left')
+
+    const img = new_element('img','','post-head-img')
     img.src = `assets/users/${obj.id_user}/perfil.jpg`
     head_left.appendChild(img)
 
@@ -149,23 +139,16 @@ console.log(obj)
         menuContext(tbl,e)
     })
 
-    const head_name = document.createElement('div')
-    head_name.className = 'post-head-name'
-    head_name.innerHTML = obj.nome_usuario
+    const head_name = new_element('div',obj.nome_usuario,'post-head-name')
     head_left.appendChild(head_name)
     head.appendChild(head_left)
 
-    const head_rigth = document.createElement('div')
-    head_rigth.className = 'post-head-left'
+    const head_rigth = new_element('div','','post-head-left')
 
-    const subs_btn = document.createElement('div')
-    subs_btn.className = 'post-btn'
-    subs_btn.innerHTML = 'Subscribe'
+    const subs_btn = new_element('div','Subscribe','post-btn')
     head_rigth.appendChild(subs_btn)
 
-    const btn_more = document.createElement('div')
-    btn_more.className = 'btnMore'
-    btn_more.innerHTML = '...'
+    const btn_more = new_element('div','...','btnMore')
     if(obj.owner=='1'){
         btn_more.addEventListener('click',(e)=>{
             const tbl = []
@@ -223,6 +206,10 @@ console.log(obj)
         mov.appendChild(new_element('p','h'))
         track_data.appendChild(mov)   
 
+        post_track.addEventListener('click',()=>{
+            openHTML('post_track.html','web-window',obj.nome,obj)
+        })
+
         post.appendChild(post_track)
     }else{
         const post_text = new_element('div',obj.texto, 'post-text')
@@ -230,34 +217,26 @@ console.log(obj)
     
     }
 
-
-    const post_time = document.createElement('div')
-    post_time.className = 'post-time'
+    const post_time = new_element('div','', 'post-time')
     post_time.innerHTML = `${obj.tipo == 'GPX'? obj.date_trk.viewXDate() : obj.cadastro.viewXDate()} - ${obj.VW} Views`
     post.appendChild(post_time)
 
-    const post_social = document.createElement('div')
-    post_social.className = 'post-social'
+    const post_social = new_element('div','', 'post-social')
     post.appendChild(post_social)
 
-    const post_chat = document.createElement('div')
-    post_chat.className = 'post-social-chat'
-    post_chat.innerHTML = `<span class="mdi mdi-chat-outline"></span><p>${obj.COMM}</p>`
+    const post_chat = new_element('div',`<span class="mdi mdi-chat-outline"></span><p>${obj.COMM}</p>`, 'post-social-chat')
     post_chat.addEventListener('click',()=>{
         commentPost(obj.id,post)
     })
     post_social.appendChild(post_chat)
 
-    const post_like = document.createElement('div')
-    post_like.innerHTML = `<span class="mdi mdi-thumb-up-outline"></span><p>${obj.LK}</p>`
-    post_like.className = 'post-social-chat'
+    const post_like = new_element('div',`<span class="mdi mdi-thumb-up-outline"></span><p>${obj.LK}</p>`, 'post-social-chat')
     post_like.addEventListener('click',()=>{
         likePost(obj.id,post_like)
     })
     post_social.appendChild(post_like)
 
-    const post_comm = document.createElement('div')
-    post_comm.className = 'post-comm'
+    const post_comm = new_element('div','', 'post-comm')
     post.appendChild(post_comm)
 
     return post

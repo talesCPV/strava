@@ -1,0 +1,72 @@
+<template>
+    <style>
+
+        .show-map{
+            padding: 15px;
+        }
+
+        #map { 
+            height: 300px;
+/*            max-width: 75vw; */
+        }
+
+    </style>
+
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+     integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
+     crossorigin=""/>
+
+    <fieldset class="show-map">
+        <legend>Mapa</legend>
+        <div id="map"></div>
+
+    </fieldset>
+
+    <div class="legenda">
+
+    </div>
+
+</template>
+<script>
+
+    const pageData = main_data.post_track.data
+    const pageFunc = main_data.post_track.func
+    const pageScreen = document.querySelector('#card-post_track')
+    var map
+    
+    function pageStart(){
+
+        getFile(pageData.file).then((resp)=>{
+            pageData.gps = JSON.parse(resp)
+
+            loadMap(pageData.gps.points[0].lat,pageData.gps.points[0].lon)
+
+            console.log(pageData)
+
+            drawTrack(pageData.gps.points)
+        })
+
+    }
+
+    function loadMap(lat,lon){
+        map = L.map('map').setView([lat,lon], 13);
+
+        L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            maxZoom: 18,
+            attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+        }).addTo(map);
+    }
+
+    function drawTrack(pts){
+        const points = []
+        for(let i=0; i<pts.length; i++){
+            points.push([pts[i].lat,pts[i].lon])
+        }
+        var polygon = L.polygon(points).addTo(map);
+    }
+
+
+
+    pageStart()
+
+</script>

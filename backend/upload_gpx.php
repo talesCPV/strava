@@ -44,7 +44,7 @@
         $object->name =  "".$xml->trk->name;
         $object->date =  "".$xml->metadata->time;
         $object->type =  "".$xml->trk->type;
-        $object->gps = array();
+        $object->points = array();
 
         include_once "gps.php";
 
@@ -81,7 +81,7 @@
           $point->time_sec = $time;
           $point->mov_time = $mov_time;
 
-          $object->gps[] = $point;
+          $object->points[] = $point;
           $last = $point;
           $last->hour = $hour;
         }
@@ -107,7 +107,7 @@
         $json =  $path."json/".$file;
 
         if(!file_exists($json)){          
-          setPostTrack($user_hash,$object->name,$object->distance,$mov_time,$time,$object->acumulado,$object->date,$file);
+          setPostTrack($user_hash,$object->name,$object->distance,$mov_time,$time,$object->acumulado,$object->date,$json);
         }
 
         $fp = fopen($json, "w");
