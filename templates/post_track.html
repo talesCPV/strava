@@ -95,7 +95,7 @@
 
     function drawTrack(pts){
         map.points = []
-        map.alt = [['Km','b']]
+        map.alt = [['Km','Altimetria']]
         for(let i=0; i<pts.length; i++){
             map.points.push([pts[i].lat,pts[i].lon])
             map.alt.push([parseFloat(pts[i].dist),parseFloat(pts[i].ele)])
@@ -119,7 +119,7 @@
 
         var options = {
           title: 'Strava Clone 1.0',
-          hAxis: {title: 'Altimetria',  titleTextStyle: {color: '#333'}},
+          hAxis: {title: '',  titleTextStyle: {color: '#333'}},
           vAxis: {minValue: 0}
         };
 
