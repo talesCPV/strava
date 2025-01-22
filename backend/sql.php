@@ -9,7 +9,7 @@
         "USR-1"  => 'CALL sp_setUser(@access,@hash,x00,"x01","x02","x03",x04);', // ID, NOME, EMAIL, PASS, ACCESS
         "USR-2"  => 'CALL sp_updatePass(@hash,"x00","x01");', // NOME, PASS
         "USR-3"  => 'CALL sp_check_usr_mail(@hash);', //
-        "USR-4"  => 'CALL sp_newUser("x00","x01","x02","x03");', // NOME,EMAIL, PASS, ASAAS_ID
+        "USR-4"  => 'CALL sp_newUser("x00","x01","x02");', // NOME,EMAIL, PASS
         "USR-5"  => 'CALL sp_get_usr_name(x00);', // USR-ID
 
         /* CALENDAR */

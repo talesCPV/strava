@@ -312,8 +312,8 @@ function sendMail(para,assunto,mensagem){
         }); 
     }
 
-    function confirmaUser(email,asaas_id){
-        const url = 'https://planet3.com.br/backhand/backend/confirmEmail.php?asaas_id='+asaas_id
+    function confirmaUser(email,hash){
+        const url = 'https://planet3.com.br/strava/backend/confirmEmail.php?user='+hash
         const mail = `
             <style>
                 body{
@@ -345,25 +345,23 @@ function sendMail(para,assunto,mensagem){
 
 
             <div class="head">
-                <h2>Seja muito bem vindo ao BACKHAND</h2>
-                <h4>o maior portal gerenciador de aulas de tênis do Brasil</h4>    
+                <h2>Seja muito bem vindo ao Strava Clone</h2>
+                <h4>o maior portal clone do Strava do Brasil</h4>    
             </div>
 
             <div class="middle">
-                <p>Clique no botão abaixo para finalizar seu cadastro e ganhe 3 meses grátis em nossa plataforma</p>
+                <p>Clique no botão abaixo para finalizar seu cadastro</p>
 
                 <a href="${url}" class="button">CONFIRMAR CADASTRO</a>
             </div>`
 
-        sendMail(email,'BACKHAND - Confirmação de Cadastro',mail)
+        sendMail(email,'Strava Clone - Confirmação de Cadastro',mail)
 
     }
 
-    function resetaPass(email,asaas_id){
+    function resetaPass(email){
 
-        
-
-        const url = 'https://planet3.com.br/backhand/backend/confirmEmail.php?asaas_id='+asaas_id
+        const url = 'https://planet3.com.br/backhand/backend/confirmEmail.php?email='+email
         const mail = `
             <style>
                 body{

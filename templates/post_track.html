@@ -44,9 +44,6 @@
     const pageFunc = main_data.post_track.func
     const pageScreen = document.querySelector('#card-post_track')
 
-    const mapUrl = 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png'
-    const satUrl = 'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}'
-
     var map
 
     function pageStart(){
@@ -93,6 +90,20 @@
 
     }
 
+    function setMark(pos){
+/*
+        const icon = L.icon({
+            iconUrl: 'assets/icons/bike.png',
+            iconSize:    [20, 20]
+        })
+*/
+        try{
+            map.removeLayer(map.mark);
+        }catch{null}
+
+        map.mark = L.marker(pos).addTo(map)
+    }
+
     function drawTrack(pts){
         map.points = []
         map.alt = [['Km: ','Alt(m) ']]
@@ -114,17 +125,21 @@
 
 
     function drawChart() {
-//        console.log(map.alt)
-        var data = google.visualization.arrayToDataTable(map.alt);
+
+        var data = google.visualization.arrayToDataTable(map.alt)
 
         var options = {
-          title: 'Strava Clone 1.0',
+          title: pageData.nome,
           hAxis: {title: 'Km',  titleTextStyle: {color: '#333'}},
-          vAxis: {minValue: 0}
-        };
+          vAxis: {minValue: 0,baseline: map.alt[1][1]}
+        }
 
-        var chart = new google.visualization.AreaChart(document.getElementById('chart_div'));
-        chart.draw(data, options);
+        var chart = new google.visualization.LineChart(document.getElementById('chart_div'))
+        chart.draw(data, options)
+
+        google.visualization.events.addListener(chart, 'onmouseover', function(e) {
+            setMark([pageData.gps.points[e.row].lat,pageData.gps.points[e.row].lon])
+        })
       }
 
 

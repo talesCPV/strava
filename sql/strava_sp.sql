@@ -76,7 +76,7 @@ DELIMITER $$
         IN Ihash varchar(64)
     )
 	BEGIN    
-		UPDATE tb_usuario SET access=1 WHERE hash COLLATE utf8_general_ci = Ihash COLLATE utf8_general_ci;
+		UPDATE tb_usuario SET access=1 WHERE hash COLLATE utf8_general_ci = Ihash COLLATE utf8_general_ci LIMIT 1;
 	END $$
 DELIMITER ;
 
@@ -395,9 +395,9 @@ DELIMITER $$
 		IN Itexto varchar(512)
     )
 	BEGIN    
-		CALL sp_allow(Iallow,Ihash);        
-		IF(@allow)THEN        
-			SET @id_call = (SELECT IFNULL(id,0) FROM tb_usuario WHERE hash COLLATE utf8_general_ci = Ihash COLLATE utf8_general_ci LIMIT 1);
+		SET @id_call = (SELECT IFNULL(id,0) FROM tb_usuario WHERE hash COLLATE utf8_general_ci = Ihash COLLATE utf8_general_ci LIMIT 1);
+		IF(@id_call > 0)THEN    
+
 			IF(Inome="")THEN
                 DELETE FROM tb_post_like WHERE id_post=Iid;
                 DELETE FROM tb_post_view WHERE id_post=Iid;
