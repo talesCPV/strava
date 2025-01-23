@@ -6,7 +6,7 @@
             var data = google.visualization.arrayToDataTable(map.alt)
 
             var options = {
-              title: obj.nome,
+              title: 'Altimetria',
               width: '100%',
               height: 200,
               hAxis: {title: 'Km',  titleTextStyle: {color: '#333'}},
@@ -17,7 +17,9 @@
             chart.draw(data, options)
     
             google.visualization.events.addListener(chart, 'onmouseover', function(e) {
-                setMark([obj.gps.points[e.row].lat,obj.gps.points[e.row].lon])
+                try{
+                    setMark([obj.gps.points[e.row].lat,obj.gps.points[e.row].lon])
+                }catch{null}
             })
         })
 
