@@ -21,6 +21,11 @@
                     setMark([obj.gps.points[e.row].lat,obj.gps.points[e.row].lon])
                 }catch{null}
             })
+
+            google.visualization.events.addListener(chart, 'click', function(e) {
+                console.log(e)
+            })
+
         })
 
     }
