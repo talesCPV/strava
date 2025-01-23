@@ -119,7 +119,13 @@ function makePost(obj){
     const head_left = new_element('div','','post-head-left')
 
     const img = new_element('img','','post-head-img')
-    img.src = `assets/users/${obj.id_user}/perfil.jpg`
+
+    backFunc({'filename':`../assets/users/${obj.id_user}/perfil.jpg`},1)
+    .then((resp)=>{
+        const imgExist = JSON.parse(resp)    
+        img.src = imgExist ? `assets/users/${obj.id_user}/perfil.jpg` : 'assets/icons/strava.svg'
+    })  
+
     head_left.appendChild(img)
 
     img.addEventListener('click',(e)=>{

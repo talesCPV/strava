@@ -26,9 +26,9 @@
 
         const up = uploadGPX('up_file','teste.gpx')
         up.then((resp)=>{
-            const json = JSON.parse(resp)
-
-            console.log(json)
+            getPost(today.getFullDateTime())
+//            const json = JSON.parse(resp)
+//            console.log(json)
             closeModal('post_gpx')
         })
 

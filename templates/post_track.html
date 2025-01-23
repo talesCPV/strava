@@ -33,7 +33,7 @@
 
     <fieldset>
         <legend>Altimetria</legend>
-        <div id="chart_div" style="width: 100%; height: 500px;"></div>
+        <div id="chart_div" style="width: 100%;"></div>
 
     </fieldset>
 
@@ -54,15 +54,8 @@
             loadMap(pageData.gps.points[0].lat,pageData.gps.points[0].lon)
             drawTrack(pageData.gps.points)
 
-
             google.charts.load('current', {'packages':['corechart']});
             google.charts.setOnLoadCallback(drawChart);
-
-            console.log(map.alt)
-
-
-
-            console.log(pageData)
 
         })
 
@@ -130,6 +123,8 @@
 
         var options = {
           title: pageData.nome,
+          width: '100%',
+          height: 200,
           hAxis: {title: 'Km',  titleTextStyle: {color: '#333'}},
           vAxis: {minValue: 0,baseline: map.alt[1][1]}
         }
