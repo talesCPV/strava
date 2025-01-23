@@ -32,7 +32,7 @@
 
         /* POST */
         "POST-0"   => 'CALL sp_view_post("x00","x01",x02,x03);', // hash,datetime, Start, Stop
-        "POST-1"   => 'CALL sp_set_post(@access,@hash,x00,x01,"x02","x03");', // id ,id_parent,nome ,texto
+        "POST-1"   => 'CALL sp_set_post(@hash,x00,x01,"x02","x03");', // id ,id_parent,nome ,texto
         "POST-2"   => 'CALL sp_like_post(@hash,x01)', // id_post
         "POST-3"   => 'CALL sp_view_comm(@hash,x01)', // id_post
 

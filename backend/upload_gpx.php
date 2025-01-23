@@ -121,7 +121,7 @@
 
   function setPostTrack($hash,$name,$dist,$mov_time,$time,$acum,$date,$file){
 
-    $query = 'CALL sp_set_track("'. $hash .'",0,"'. $name .'","'. $dist .'",'. $mov_time .','. $time .','. $acum.',"'.$date.'","'.$file.'");';
+    $query = 'CALL sp_set_track("'. $hash .'",0,"'. $name .'","'. $dist .'",'. $mov_time .','. $time .','. $acum.',"'.$date.'","'.substr($file,strlen(getcwd()),null).'");';
 
     include "connect.php";
     $result = mysqli_query($conexao, $query);
