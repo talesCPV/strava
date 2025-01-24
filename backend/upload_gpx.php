@@ -58,13 +58,16 @@
           $point->lon = $trkpoint->attributes()->lon."";
           $point->ele = "".$trkpoint->ele;
           $point->time = "".$trkpoint->time;
-          
+          $point->speed = 0;
+
           $hour = strtotime($trkpoint->time);
 
           if($last){
 
             $move_dist = distance($last,$point);
             $time += $hour - $last->hour;
+
+            $point->speed = number_format((float)((3600 / ($hour - $last->hour)) * $move_dist), 2, '.', '');
 
             if($move_dist > 0.001 ){
               $dist += $move_dist;
@@ -80,7 +83,6 @@
           $point->acum = number_format((float)$acum, 2, '.', '');
           $point->time_sec = $time;
           $point->mov_time = $mov_time;
-//          $point->speed = $point->dist / $time  / 3600 ;
 
           $object->points[] = $point;
           $last = $point;
