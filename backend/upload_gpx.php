@@ -80,6 +80,7 @@
           $point->acum = number_format((float)$acum, 2, '.', '');
           $point->time_sec = $time;
           $point->mov_time = $mov_time;
+//          $point->speed = $point->dist / $time  / 3600 ;
 
           $object->points[] = $point;
           $last = $point;

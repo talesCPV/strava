@@ -134,13 +134,13 @@ function makePost(obj){
         mail.label = 'Ver Perfil'
         mail.link = ()=>{
             window.location.href = (window.location).toString()+'user-'+obj.id_user;
-        }            
+        }
         tbl.push(mail)
         const user = new Object
         user.label = 'Ver Treinos'
         user.link = ()=>{
             window.location.href = (window.location).toString()+'tracks-'+obj.id_user;
-        }            
+        }
         tbl.push(user)
         menuContext(tbl,e)
     })
@@ -213,6 +213,7 @@ function makePost(obj){
         track_data.appendChild(mov)   
 
         post_track.addEventListener('click',()=>{
+            obj.img = img.src
             openHTML('post_track.html','web-window',obj.nome,obj)
         })
 

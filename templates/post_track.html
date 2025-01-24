@@ -19,18 +19,50 @@
             color: blue;
          }
 
+         .track-atleta{
+            display: flex;
+            flex-direction: row;
+         }
+
     </style>
 
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
      integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
      crossorigin=""/>
 
-    <fieldset class="show-map">
-        <legend>Mapa</legend>
-        <div id="map"></div>
+    <div class="show-map">
+        <div class="head">
+            <div class="track-atleta">
+                <img class="post-head-img" id="track-user" src="">
+                <p id="track-nome-atleta"></p>
+            </div>
+            <div class="track-data">
+                <div>
+                    <p>Distância</p>
+                    <p id="track-dist"></p>
+                    <p class="track-und">Km</p>
+                </div>
+                <div>
+                    <p>Elevação</p>
+                    <p id="track-elev"></p>
+                    <p class="track-und">m</p>
+                </div>
+                <div>
+                    <p>Tempo Mov.</p>
+                    <p id="track-mov"></p>
+                    <p class="track-und">h</p>
+                </div>
+                <div>
+                    <p>Tempo Tot.</p>
+                    <p id="track-time"></p>
+                    <p class="track-und">h</p>
+                </div>
+            </div>
+        </div>
         <div id="layer">View Sat</div>
+        <div id="map"></div>
         <div id="chart_div" style="width: 100%;"></div>
-    </fieldset>
+    </div>
 
 </template>
 <script>
@@ -39,10 +71,19 @@
     const pageFunc = main_data.post_track.func
     const pageScreen = document.querySelector('#card-post_track')
 
-  
-
     function pageStart(){
 
+
+        pageScreen.querySelector('#track-user').src = pageData.img
+        pageScreen.querySelector('#track-nome-atleta').innerHTML = pageData.nome_usuario
+        pageScreen.querySelector('#track-dist').innerHTML = pageData.dist
+        pageScreen.querySelector('#track-elev').innerHTML = pageData.elev
+        const mov_h = Math.floor(pageData.mov_time/3600).toString().padStart(2,0)
+        const mov_m = Math.round(((pageData.mov_time/3600)%1) * 60).toString().padStart(2,0)
+        pageScreen.querySelector('#track-mov').innerHTML = mov_h+':'+mov_m
+        const tot_h = Math.floor(pageData.time/3600).toString().padStart(2,0)
+        const tot_m = Math.round(((pageData.time/3600)%1) * 60).toString().padStart(2,0)        
+        pageScreen.querySelector('#track-time').innerHTML = tot_h+':'+tot_m
         getFile(pageData.file).then((resp)=>{
             pageData.gps = JSON.parse(resp)
 
