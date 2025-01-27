@@ -62,6 +62,10 @@
         <div id="layer">View Sat</div>
         <div id="map"></div>
         <div id="chart_div" style="width: 100%;"></div>
+        <div class="track-seg">
+            <p>Seguimentos</p>
+            <p id="seg">Novo Seguimento</p>
+        </div>
     </div>
 
 </template>
@@ -88,7 +92,7 @@
             pageData.gps = JSON.parse(resp)
 
             loadMap([pageData.gps.points[0].lat,pageData.gps.points[0].lon])
-            drawTrack(pageData.gps.points)
+            drawTrack(pageData.gps.points,map)
             drawAlt(pageData)
 
         })
@@ -102,6 +106,10 @@
             pageScreen.querySelector('#layer').innerHTML = 'View Map'
         }
         setLayer(map.layer.name == 'map' ? 'sat' : 'map')
+    })
+
+    pageScreen.querySelector('#seg').addEventListener('click',()=>{
+        openHTML('post_seg.html','pop-up','Novo Seguimento',pageData)
     })
 
     pageStart()

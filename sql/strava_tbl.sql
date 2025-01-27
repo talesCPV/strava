@@ -90,3 +90,18 @@ CREATE TABLE tb_follow (
     FOREIGN KEY (id_follow) REFERENCES tb_usuario(id),
     PRIMARY KEY (id_user,id_follow)
 ) ENGINE=MyISAM AUTO_INCREMENT=0 DEFAULT CHARSET=utf8;
+
+DROP TABLE IF EXISTS tb_segmento;
+CREATE TABLE tb_segmento (
+  id int(11) NOT NULL AUTO_INCREMENT,
+  id_owner int(11) NOT NULL,
+  nome varchar(60) NOT NULL,
+  data date DEFAULT NULL,
+  lat_ini double DEFAULT '0',
+  lon_ini double DEFAULT '0',
+  lat_fin double DEFAULT '0',
+  lon_fin double DEFAULT '0',
+  dist double DEFAULT '0',
+  FOREIGN KEY (id_owner) REFERENCES tb_usuario(id),
+  PRIMARY KEY (id)
+) ENGINE=MyISAM AUTO_INCREMENT=0 DEFAULT CHARSET=utf8;

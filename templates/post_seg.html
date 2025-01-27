@@ -1,0 +1,28 @@
+<template>
+    <style>
+        #seg-map { 
+            height: 300px;
+/*            max-width: 75vw; */
+        }
+    </style>
+
+    <div class="seguimento">
+        <div id="seg-map"></div>
+        <div id="chart_div" style="width: 100%;"></div>
+    </div>
+
+</template>
+<script>
+
+    const pageData = main_data.post_seg.data
+    const pageFunc = main_data.post_seg.func
+    const pageScreen = document.querySelector('#card-post_seg')
+    pageData.map = L.map('seg-map').setView([pageData.gps.points[0].lat,pageData.gps.points[0].lon], 13);
+
+
+    setLayer('map', pageData.map)
+    drawTrack(pageData.gps.points,pageData.map)
+
+    console.log(pageData)
+
+</script>

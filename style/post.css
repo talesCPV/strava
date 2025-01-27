@@ -125,6 +125,26 @@
     font-size: 2em;
 }
 
+.track-seg{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.track-seg p:nth-child(1){
+    font-size: 2em;
+}
+
+.track-seg p:nth-child(2){
+    text-align: end;
+    width: 100%;
+    cursor: pointer;
+}
+
+.track-seg p:nth-child(2):hover{
+    color: blue;
+}
+
 .comments{
     align-items: end;
 }

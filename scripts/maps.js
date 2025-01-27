@@ -2,24 +2,22 @@ var map
 
 function loadMap(pos){
     map = L.map('map').setView(pos, 13);
-
     setLayer()
-
 }
 
-function setLayer(lay='map'){
+function setLayer(lay='map', mp=map){
     const mapUrl = 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png'
     const satUrl = 'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}'
     try{
-        map.removeLayer(map.layer);
+        mp.removeLayer(mp.layer);
     }catch{ null }
 
-    map.layer = L.tileLayer( lay=='map' ? mapUrl : satUrl , {
+    mp.layer = L.tileLayer( lay=='map' ? mapUrl : satUrl , {
         maxZoom: 18,
         attribution: `Strava Clone 1.0`
-    }).addTo(map);
-    map.layer.name = lay
-    map.setZoom(11);
+    }).addTo(mp);
+    mp.layer.name = lay
+    mp.setZoom(11);
 }
 
 function setMark(pos){
@@ -36,12 +34,12 @@ function setMark(pos){
     map.mark = L.marker(pos).addTo(map)
 }
 
-function drawTrack(pts){
-    map.points = []
-    map.alt = [['Km: ','Alt(m) ']]
+function drawTrack(pts, mp=map){
+    mp.points = []
+    mp.alt = [['Km: ','Alt(m) ']]
     for(let i=0; i<pts.length; i++){
-        map.points.push([pts[i].lat,pts[i].lon])
-        map.alt.push([parseFloat(pts[i].dist),parseFloat(pts[i].ele)])
+        mp.points.push([pts[i].lat,pts[i].lon])
+        mp.alt.push([parseFloat(pts[i].dist),parseFloat(pts[i].ele)])
     }
-    var polygon = L.polygon(map.points).addTo(map);
+    mp.polygon = L.polygon(mp.points).addTo(mp);
 }
