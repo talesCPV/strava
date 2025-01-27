@@ -459,3 +459,23 @@ DELIMITER $$
         SELECT COUNT(*) AS LK FROM tb_post_like WHERE id_post = Iid_post; 
 	END $$
 DELIMITER ;
+
+DROP PROCEDURE IF EXISTS sp_follow;
+DELIMITER $$
+	CREATE PROCEDURE sp_follow(
+		IN Ihash varchar(64),
+		IN Iid_follow int(11)
+    )
+	BEGIN
+		SET @id_call = (SELECT IFNULL(id,0) FROM tb_usuario WHERE hash COLLATE utf8_general_ci = Ihash COLLATE utf8_general_ci LIMIT 1);
+		SET @has = (SELECT COUNT(*) FROM tb_follow WHERE id_follow = Iid_follow AND id_user = @id_call);
+        IF(@has>0)THEN
+			DELETE FROM tb_follow WHERE id_follow = Iid_follow AND id_user = @id_call; 
+		ELSE 
+			IF(@id_call != Iid_follow)THEN
+				INSERT INTO tb_follow (id_follow,id_user) VALUES (Iid_follow, @id_call);
+            END IF;
+        END IF;
+        SELECT COUNT(*) AS FLW FROM tb_follow WHERE id_user = @id_call; 
+	END $$
+DELIMITER ;

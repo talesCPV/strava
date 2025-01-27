@@ -56,6 +56,20 @@ function likePost(id,div){
     }
 }
 
+function follow_user(id){
+
+    const params = new Object;
+        params.hash = localStorage.getItem('hash') != null ? localStorage.getItem('hash') : 0
+        params.id = id
+    if(params.hash){
+        const myPromisse = queryDB(params,'FLW-0')
+        myPromisse.then((resolve)=>{
+            const json = JSON.parse(resolve)[0]
+            console.log(json)
+        })    
+    }
+}
+
 function newComm(id,div){
 
     const comm = document.createElement('div')
@@ -151,32 +165,39 @@ function makePost(obj){
 
     const head_rigth = new_element('div','','post-head-left')
 
-    const subs_btn = new_element('div','Subscribe','post-btn')
-    head_rigth.appendChild(subs_btn)
-
-    const btn_more = new_element('div','...','btnMore')
-    if(obj.owner=='1'){
-        btn_more.addEventListener('click',(e)=>{
-            const tbl = []
-            const mail = new Object
-            mail.label = 'Editar'
-            mail.link = ()=>{
-                obj.action = 'EDT'
-                openHTML('post_new.html','pop-up','Edição...',obj,800)
-            }            
-            tbl.push(mail)
-            const user = new Object
-            user.label = 'Deletar'
-            user.link = ()=>{
-                if(confirm('Deseja deletar este post?')){
-                    delPost(obj.id,post)
-                }
-            }            
-            tbl.push(user)
-            menuContext(tbl,e,0)
+    if(localStorage.length){
+        const subs_btn = new_element('div','Subscribe','post-btn')
+        head_rigth.appendChild(subs_btn)
+        subs_btn.addEventListener('click',()=>{
+            follow_user(obj.id_user)
         })
+
+        if(obj.owner=='1'){
+            const btn_more = new_element('div','...','btnMore')
+            btn_more.addEventListener('click',(e)=>{
+                const tbl = []
+                const mail = new Object
+                mail.label = 'Editar'
+                mail.link = ()=>{
+                    obj.action = 'EDT'
+                    openHTML('post_new.html','pop-up','Edição...',obj,800)
+                }            
+                tbl.push(mail)
+                const user = new Object
+                user.label = 'Deletar'
+                user.link = ()=>{
+                    if(confirm('Deseja deletar este post?')){
+                        delPost(obj.id,post)
+                    }
+                }            
+                tbl.push(user)
+                menuContext(tbl,e,0)
+            })
+            head_rigth.appendChild(btn_more)
+
+        }
     }
-    head_rigth.appendChild(btn_more)
+
     head.appendChild(head_rigth)
     post.appendChild(head)
 
@@ -190,7 +211,8 @@ function makePost(obj){
         const track_name = new_element('div','','track-name')
         post_track.appendChild(track_name)
         track_name.appendChild(new_element('p',obj.nome))
-
+        track_name.appendChild(new_element('p',obj.date_trk.viewXDate()))
+     
         const track_data = new_element('div','','track-data')
         post_track.appendChild(track_data)
 
@@ -216,16 +238,15 @@ function makePost(obj){
             obj.img = img.src
             openHTML('post_track.html','web-window',obj.nome,obj)
         })
-
         post.appendChild(post_track)
+
     }else{
         const post_text = new_element('div',obj.texto, 'post-text')
         post.appendChild(post_text)
-    
     }
 
     const post_time = new_element('div','', 'post-time')
-    post_time.innerHTML = `${obj.tipo == 'GPX'? obj.date_trk.viewXDate() : obj.cadastro.viewXDate()} - ${obj.VW} Views`
+    post_time.innerHTML = `${obj.tipo == 'GPX'? obj.cadastro.viewXDate() : obj.cadastro.viewXDate()} - ${obj.VW} Views`
     post.appendChild(post_time)
 
     const post_social = new_element('div','', 'post-social')

@@ -68,6 +68,8 @@ CREATE TABLE tb_post (
 CREATE TABLE tb_post_like (
     id_post int(11) NOT NULL,
     id_user int(11) NOT NULL,
+    FOREIGN KEY (id_post) REFERENCES tb_post(id),
+    FOREIGN KEY (id_user) REFERENCES tb_usuario(id),    
     PRIMARY KEY (id_post,id_user)
 ) ENGINE=MyISAM AUTO_INCREMENT=0 DEFAULT CHARSET=utf8;
 
@@ -75,5 +77,16 @@ CREATE TABLE tb_post_like (
 CREATE TABLE tb_post_view (
     id_post int(11) NOT NULL,
     id_user int(11) NOT NULL,
+    FOREIGN KEY (id_post) REFERENCES tb_post(id),
+    FOREIGN KEY (id_user) REFERENCES tb_usuario(id),
     PRIMARY KEY (id_post,id_user)
+) ENGINE=MyISAM AUTO_INCREMENT=0 DEFAULT CHARSET=utf8;
+
+ DROP TABLE IF EXISTS tb_follow;
+CREATE TABLE tb_follow (
+    id_user int(11) NOT NULL,
+    id_follow int(11) NOT NULL,
+    FOREIGN KEY (id_user) REFERENCES tb_usuario(id),
+    FOREIGN KEY (id_follow) REFERENCES tb_usuario(id),
+    PRIMARY KEY (id_user,id_follow)
 ) ENGINE=MyISAM AUTO_INCREMENT=0 DEFAULT CHARSET=utf8;

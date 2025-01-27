@@ -36,6 +36,8 @@
         "POST-2"   => 'CALL sp_like_post(@hash,x01)', // id_post
         "POST-3"   => 'CALL sp_view_comm(@hash,x01)', // id_post
 
+        /* FOLLOW */
+        "FLW-0"   => 'CALL sp_follow(@hash,x01)', // id_user to follow
 
     );
 

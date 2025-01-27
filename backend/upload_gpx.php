@@ -41,9 +41,14 @@
         $xml = simplexml_load_file($path."gpx/".$filename);
 
         $object = new stdClass();
+
         $object->name =  "".$xml->trk->name;
-        $object->date =  "".$xml->metadata->time;
         $object->type =  "".$xml->trk->type;
+        try{
+          $object->date =  "".$xml->metadata->time;
+        }catch(Exception $e){
+          $object->date =  "0000-01-01T00:00:00Z";
+        }
         $object->points = array();
 
         include_once "gps.php";
@@ -57,18 +62,24 @@
           $point->lat = $trkpoint->attributes()->lat."";
           $point->lon = $trkpoint->attributes()->lon."";
           $point->ele = "".$trkpoint->ele;
-          $point->time = "".$trkpoint->time;
+          $hour = 0;
+          try{
+            $point->time = "".$trkpoint->time;
+            $hour = strtotime($trkpoint->time);
+          }catch(Exception $e){
+            $point->time = "0000-01-01T00:00:00Z";
+          }          
           $point->speed = 0;
-
-          $hour = strtotime($trkpoint->time);
 
           if($last){
 
             $move_dist = distance($last,$point);
             $time += $hour - $last->hour;
-
-            $point->speed = number_format((float)((3600 / ($hour - $last->hour)) * $move_dist), 2, '.', '');
-
+            if($hour){
+              $point->speed = number_format((float)((3600 / ($hour - $last->hour)) * $move_dist), 2, '.', '');
+            }else{
+              $point->speed = 0;
+            }
             if($move_dist > 0.001 ){
               $dist += $move_dist;
               $mov_time += $hour - $last->hour;
@@ -116,7 +127,6 @@
         $fp = fopen($json, "w");
         fwrite($fp,$out);
         fclose($fp);
-
 
       }
     }
