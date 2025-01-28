@@ -1,20 +1,22 @@
     google.charts.load('current', {'packages':['corechart']})
 
-    function drawAlt(obj,id='chart_div') {
+    function drawAlt(obj,data,id='chart_div') {
+
+console.log(data)
 
         google.charts.setOnLoadCallback(()=>{
-            var data = google.visualization.arrayToDataTable(map.alt)
+            var dt = google.visualization.arrayToDataTable(data)
 
             var options = {
               title: 'Altimetria',
               width: '100%',
               height: 200,
               hAxis: {title: 'Km',  titleTextStyle: {color: '#333'}},
-              vAxis: {minValue: 0,baseline: map.alt[1][1]}
+              vAxis: {minValue: 0,baseline: data[1][1]}
             }
     
             var chart = new google.visualization.LineChart(document.getElementById(id))
-            chart.draw(data, options)
+            chart.draw(dt, options)
     
             google.visualization.events.addListener(chart, 'onmouseover', function(e) {
                 try{

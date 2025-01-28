@@ -1,11 +1,13 @@
-var map
 
-function loadMap(pos){
-    map = L.map('map').setView(pos, 13);
-    setLayer()
+function newMap(pos,id='map'){
+    const map = L.map(id).setView(pos, 13)
+    map.polyline = new Object
+    map.marker = new Object
+    setLayer(map)
+    return map
 }
 
-function setLayer(lay='map', mp=map){
+function setLayer(mp,lay='map'){
     const mapUrl = 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png'
     const satUrl = 'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}'
     try{
@@ -20,7 +22,7 @@ function setLayer(lay='map', mp=map){
     mp.setZoom(11);
 }
 
-function setMark(pos){
+function setMark(mp,name,i){
 /*
     const icon = L.icon({
         iconUrl: 'assets/icons/bike.png',
@@ -28,26 +30,35 @@ function setMark(pos){
     })
 */
     try{
-        map.removeLayer(map.mark);
+        mp.removeLayer(mp.marker[name])
     }catch{null}
 
-    map.mark = L.marker(pos).addTo(map)
+    mp.marker[name] = L.marker(pos).addTo(map)
 }
 
-function drawTrack(pts, mp=map, color='blue'){
-    mp.points = []
-    mp.alt = [['Km: ','Alt(m) ']]
+function drawTrack(pts, mp=map, name='default', color='blue',center=1){
+    const points = []
+    const alt = [['Km: ','Alt(m) ']]
+
+    try{
+        mp.removeLayer(mp.polyline[name])
+    }catch{null}
+
     for(let i=0; i<pts.length; i++){
-        mp.points.push([pts[i].lat,pts[i].lon])
-        mp.alt.push([parseFloat(pts[i].dist),parseFloat(pts[i].ele)])
+        points.push([pts[i].lat,pts[i].lon])
+        alt.push([parseFloat(pts[i].dist),parseFloat(pts[i].ele)])
     }
-    mp.polyline = new L.Polyline(mp.points, {
+    mp.polyline[name] = new L.Polyline(points, {
         color: color,
         weight: 3,
         opacity: 0.5,
         smoothFactor: 1
     })
-    mp.polyline.addTo(mp);
-    mp.center = mp.polyline.getBounds().getCenter()
-    mp.setView(new L.LatLng(mp.center.lat,mp.center.lng), 11);
+    mp.polyline[name].addTo(mp)
+    mp.center = mp.polyline[name].getBounds().getCenter()
+    if(center){
+        mp.setView(new L.LatLng(mp.center.lat,mp.center.lng), 11)
+    }
+
+    return alt
 }

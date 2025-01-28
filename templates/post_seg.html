@@ -12,30 +12,20 @@
         min-height: 50px;
         }
 
-        input[type=range]::-webkit-slider-thumb {
-        -webkit-appearance: none;
-        pointer-events: all;
-        width: 24px;
-        height: 24px;
-        background-color: #fff;
-        border-radius: 50%;
-        box-shadow: 0 0 0 1px #C6C6C6;
-        cursor: pointer;
-        }
-
         input[type=range]::-moz-range-thumb {
-        -webkit-appearance: none;
+/*        -webkit-appearance: none;*/
         pointer-events: all;
         width: 24px;
         height: 24px;
-        background-color: #fff;
+        background-color: #c03b3b;
         border-radius: 50%;
         box-shadow: 0 0 0 1px #C6C6C6;
         cursor: pointer;  
+        z-index: 10;
         }
 
         input[type="range"] {
-            -webkit-appearance: none; 
+/*            -webkit-appearance: none; */
             appearance: none;
             height: 2px;
             width: 100%;
@@ -44,26 +34,20 @@
             pointer-events: none;
         }
 
-        #fromSlider {
+        #iniSlider {
             height: 0;
             z-index: 1;
         }
 
-        #fromSlider::after{
-            content: "T";
-            width: 24px;
-        height: 24px;
-        background-color: #c73131;
-        z-index: 10;
-        }
+
 
     </style>
 
     <div class="seguimento">
         <div id="seg-map"></div>
         <div class="sliders_control">
-            <input id="iniSlider" type="range" value="10" min="0" max="100"/>
-            <input id="endSlider" type="range" value="20" min="0" max="100"/>
+            <input id="iniSlider" type="range" value="10" min="0"/>
+            <input id="finSlider" type="range" value="20" min="0"/>
         </div>
 
 <!--        <div id="seg-alt" style="width: 100%;"></div> -->
@@ -77,37 +61,44 @@
     const pageData = main_data.post_seg.data
     const pageFunc = main_data.post_seg.func
     const pageScreen = document.querySelector('#card-post_seg')
-    pageData.map = L.map('seg-map').setView([pageData.gps.points[0].lat,pageData.gps.points[0].lon], 13);
+    pageData.map = newMap([pageData.gps.points[0].lat,pageData.gps.points[0].lon],'seg-map')
     const ini = pageScreen.querySelector('#iniSlider')
-    const end = pageScreen.querySelector('#endSlider')
+    const fin = pageScreen.querySelector('#finSlider')
 
     function pageStart(){
-        setLayer('map', pageData.map)
+
         drawTrack(pageData.gps.points,pageData.map)
 //        drawAlt(pageData,'seg-alt')
         ini.max = pageData.gps.points.length-1
-        end.max = pageData.gps.points.length-1
+        fin.max = pageData.gps.points.length-1
         ini.value = Math.floor(pageData.gps.points.length / 3)
-        end.value = Math.floor(pageData.gps.points.length / 3) * 2
+        fin.value = Math.floor(pageData.gps.points.length / 3) * 2
+    }
+
+    function drawSeg(){
+        const seg = pageData.gps.points.filter((el,i)=>(i>=ini.value && i<= fin.value))
+        drawTrack(seg, pageData.map,'seg','red',0)
     }
 
     ini.addEventListener('input',()=>{
-        ini.value = ini.value > end.value ? end.value : ini.value
+        ini.value = ini.value > fin.value ? fin.value : ini.value
 
         try{
             pageData.map.removeLayer(pageData.map.mark_ini);
         }catch{null}
         pageData.map.mark_ini = L.marker([pageData.gps.points[ini.value].lat,pageData.gps.points[ini.value].lon]).addTo(pageData.map)
+        drawSeg()
 
     })
 
-    end.addEventListener('input',()=>{
-        end.value = ini.value > end.value ? ini.value : end.value
+    fin.addEventListener('input',()=>{
+        fin.value = ini.value > fin.value ? ini.value : fin.value
+        drawSeg()
 
         try{
-            pageData.map.removeLayer(pageData.map.mark_end);
+            pageData.map.removeLayer(pageData.map.mark_fin);
         }catch{null}
-        pageData.map.mark_end = L.marker([pageData.gps.points[end.value].lat,pageData.gps.points[end.value].lon]).addTo(pageData.map)
+        pageData.map.mark_fin = L.marker([pageData.gps.points[fin.value].lat,pageData.gps.points[fin.value].lon]).addTo(pageData.map)
 
 
     })

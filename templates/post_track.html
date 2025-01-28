@@ -74,6 +74,7 @@
     const pageData = main_data.post_track.data
     const pageFunc = main_data.post_track.func
     const pageScreen = document.querySelector('#card-post_track')
+    var map
 
     function pageStart(){
 
@@ -91,9 +92,9 @@
         getFile(pageData.file).then((resp)=>{
             pageData.gps = JSON.parse(resp)
 
-            loadMap([pageData.gps.points[0].lat,pageData.gps.points[0].lon])
-            drawTrack(pageData.gps.points,map)
-            drawAlt(pageData)
+            map = newMap([pageData.gps.points[0].lat,pageData.gps.points[0].lon],'map')
+            const alt =  drawTrack(pageData.gps.points,map)
+            drawAlt(pageData, alt)
 
         })
 
@@ -114,7 +115,7 @@
 
     pageScreen.querySelector('#seg').addEventListener('click',()=>{
         if(pageData.owner == '1'){
-            openHTML('post_seg.html','pop-up','Novo Seguimento',pageData)
+            openHTML('post_seg.html','pop-up','Novo Seguimento',pageData,600)
         }
     })
 
