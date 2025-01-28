@@ -4,11 +4,71 @@
             height: 300px;
 /*            max-width: 75vw; */
         }
+
+
+
+        .sliders_control {
+        position: relative;
+        min-height: 50px;
+        }
+
+        input[type=range]::-webkit-slider-thumb {
+        -webkit-appearance: none;
+        pointer-events: all;
+        width: 24px;
+        height: 24px;
+        background-color: #fff;
+        border-radius: 50%;
+        box-shadow: 0 0 0 1px #C6C6C6;
+        cursor: pointer;
+        }
+
+        input[type=range]::-moz-range-thumb {
+        -webkit-appearance: none;
+        pointer-events: all;
+        width: 24px;
+        height: 24px;
+        background-color: #fff;
+        border-radius: 50%;
+        box-shadow: 0 0 0 1px #C6C6C6;
+        cursor: pointer;  
+        }
+
+        input[type="range"] {
+            -webkit-appearance: none; 
+            appearance: none;
+            height: 2px;
+            width: 100%;
+            position: absolute;
+            background-color: #C6C6C6;
+            pointer-events: none;
+        }
+
+        #fromSlider {
+            height: 0;
+            z-index: 1;
+        }
+
+        #fromSlider::after{
+            content: "T";
+            width: 24px;
+        height: 24px;
+        background-color: #c73131;
+        z-index: 10;
+        }
+
     </style>
 
     <div class="seguimento">
         <div id="seg-map"></div>
-        <div id="chart_div" style="width: 100%;"></div>
+        <div class="sliders_control">
+            <input id="iniSlider" type="range" value="10" min="0" max="100"/>
+            <input id="endSlider" type="range" value="20" min="0" max="100"/>
+        </div>
+
+<!--        <div id="seg-alt" style="width: 100%;"></div> -->
+        
+
     </div>
 
 </template>
@@ -18,11 +78,41 @@
     const pageFunc = main_data.post_seg.func
     const pageScreen = document.querySelector('#card-post_seg')
     pageData.map = L.map('seg-map').setView([pageData.gps.points[0].lat,pageData.gps.points[0].lon], 13);
+    const ini = pageScreen.querySelector('#iniSlider')
+    const end = pageScreen.querySelector('#endSlider')
+
+    function pageStart(){
+        setLayer('map', pageData.map)
+        drawTrack(pageData.gps.points,pageData.map)
+//        drawAlt(pageData,'seg-alt')
+        ini.max = pageData.gps.points.length-1
+        end.max = pageData.gps.points.length-1
+        ini.value = Math.floor(pageData.gps.points.length / 3)
+        end.value = Math.floor(pageData.gps.points.length / 3) * 2
+    }
+
+    ini.addEventListener('input',()=>{
+        ini.value = ini.value > end.value ? end.value : ini.value
+
+        try{
+            pageData.map.removeLayer(pageData.map.mark_ini);
+        }catch{null}
+        pageData.map.mark_ini = L.marker([pageData.gps.points[ini.value].lat,pageData.gps.points[ini.value].lon]).addTo(pageData.map)
+
+    })
+
+    end.addEventListener('input',()=>{
+        end.value = ini.value > end.value ? ini.value : end.value
+
+        try{
+            pageData.map.removeLayer(pageData.map.mark_end);
+        }catch{null}
+        pageData.map.mark_end = L.marker([pageData.gps.points[end.value].lat,pageData.gps.points[end.value].lon]).addTo(pageData.map)
 
 
-    setLayer('map', pageData.map)
-    drawTrack(pageData.gps.points,pageData.map)
+    })
 
-    console.log(pageData)
+    pageStart()
+
 
 </script>

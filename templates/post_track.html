@@ -97,6 +97,10 @@
 
         })
 
+        if(pageData.owner != '1'){
+            pageScreen.querySelector('#seg').style.display = 'none'
+        }
+
     }
 
     pageScreen.querySelector('#layer').addEventListener('click',()=>{
@@ -109,7 +113,9 @@
     })
 
     pageScreen.querySelector('#seg').addEventListener('click',()=>{
-        openHTML('post_seg.html','pop-up','Novo Seguimento',pageData)
+        if(pageData.owner == '1'){
+            openHTML('post_seg.html','pop-up','Novo Seguimento',pageData)
+        }
     })
 
     pageStart()

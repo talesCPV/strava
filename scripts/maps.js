@@ -34,12 +34,20 @@ function setMark(pos){
     map.mark = L.marker(pos).addTo(map)
 }
 
-function drawTrack(pts, mp=map){
+function drawTrack(pts, mp=map, color='blue'){
     mp.points = []
     mp.alt = [['Km: ','Alt(m) ']]
     for(let i=0; i<pts.length; i++){
         mp.points.push([pts[i].lat,pts[i].lon])
         mp.alt.push([parseFloat(pts[i].dist),parseFloat(pts[i].ele)])
     }
-    mp.polygon = L.polygon(mp.points).addTo(mp);
+    mp.polyline = new L.Polyline(mp.points, {
+        color: color,
+        weight: 3,
+        opacity: 0.5,
+        smoothFactor: 1
+    })
+    mp.polyline.addTo(mp);
+    mp.center = mp.polyline.getBounds().getCenter()
+    mp.setView(new L.LatLng(mp.center.lat,mp.center.lng), 11);
 }
