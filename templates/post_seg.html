@@ -81,8 +81,7 @@
     }
 
     ini.addEventListener('input',()=>{
-        ini.value = ini.value > fin.value ? fin.value : ini.value
-
+        ini.value = Number(ini.value) > Number(fin.value) ? fin.value : ini.value
         try{
             pageData.map.removeLayer(pageData.map.mark_ini);
         }catch{null}
@@ -92,7 +91,7 @@
     })
 
     fin.addEventListener('input',()=>{
-        fin.value = ini.value > fin.value ? ini.value : fin.value
+        fin.value = Number(ini.value) > Number(fin.value) ? ini.value : fin.value
         drawSeg()
 
         try{
