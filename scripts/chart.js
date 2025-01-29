@@ -1,32 +1,34 @@
     google.charts.load('current', {'packages':['corechart']})
 
-    function drawAlt(obj,data,id='chart_div') {
+    function drawAlt(obj,id='chart_div',range) {
 
-console.log(data)
+        obj.alt.unshift(['Km:','Alt(m)'])
 
         google.charts.setOnLoadCallback(()=>{
-            var dt = google.visualization.arrayToDataTable(data)
+            obj.chart = new Object
+            obj.chart.data = google.visualization.arrayToDataTable(obj.alt)
 
-            var options = {
+            obj.chart.options = {
               title: 'Altimetria',
               width: '100%',
               height: 200,
               hAxis: {title: 'Km',  titleTextStyle: {color: '#333'}},
-              vAxis: {minValue: 0,baseline: data[1][1]}
+              vAxis: {minValue: 0,baseline: 0}
             }
     
-            var chart = new google.visualization.LineChart(document.getElementById(id))
-            chart.draw(dt, options)
+            obj.chart.view = new google.visualization.AreaChart(document.getElementById(id))
+            obj.chart.view.draw(obj.chart.data, obj.chart.options)
     
-            google.visualization.events.addListener(chart, 'onmouseover', function(e) {
+            google.visualization.events.addListener(obj.chart.view, 'onmouseover', function(e) {
                 try{
                     setMark([obj.gps.points[e.row].lat,obj.gps.points[e.row].lon])
                 }catch{null}
             })
 
-            google.visualization.events.addListener(chart, 'click', function(e) {
+            google.visualization.events.addListener(obj.chart.view, 'click', function(e) {
                 console.log(e)
             })
+
 
         })
 

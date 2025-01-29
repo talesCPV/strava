@@ -24,6 +24,49 @@
             flex-direction: row;
          }
 
+        /* SLIDERS */
+
+        #seg-map { 
+            height: 300px;
+/*            max-width: 75vw; */
+        }
+
+
+
+        .sliders_control {
+        position: relative;
+        min-height: 50px;
+        max-width: 95%;
+        }
+
+        input[type=range]::-moz-range-thumb {
+/*        -webkit-appearance: none;*/
+        pointer-events: all;
+        width: 24px;
+        height: 24px;
+        background-color: #c03b3b;
+        border-radius: 50%;
+        box-shadow: 0 0 0 1px #C6C6C6;
+        cursor: pointer;  
+        z-index: 10;
+        }
+
+        input[type="range"] {
+/*            -webkit-appearance: none; */
+            appearance: none;
+            height: 2px;
+            width: 100%;
+            position: absolute;
+            background-color: #C6C6C6;
+            pointer-events: none;
+        }
+
+        #iniSlider {
+            height: 0;
+            z-index: 1;
+        }
+
+
     </style>
 
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
@@ -61,6 +104,10 @@
         </div>
         <div id="layer">View Sat</div>
         <div id="map"></div>
+        <div class="sliders_control">
+            <input id="iniSlider" type="range" value="10" min="0"/>
+            <input id="finSlider" type="range" value="20" min="0"/>
+        </div>
         <div id="chart_div" style="width: 100%;"></div>
         <div class="track-seg">
             <p>Seguimentos</p>
@@ -74,11 +121,11 @@
     const pageData = main_data.post_track.data
     const pageFunc = main_data.post_track.func
     const pageScreen = document.querySelector('#card-post_track')
-    var map
+    const ini = pageScreen.querySelector('#iniSlider')
+    const fin = pageScreen.querySelector('#finSlider')
 
     function pageStart(){
-
-
+        
         pageScreen.querySelector('#track-user').src = pageData.img
         pageScreen.querySelector('#track-nome-atleta').innerHTML = pageData.nome_usuario
         pageScreen.querySelector('#track-dist').innerHTML = pageData.dist
@@ -92,9 +139,16 @@
         getFile(pageData.file).then((resp)=>{
             pageData.gps = JSON.parse(resp)
 
-            map = newMap([pageData.gps.points[0].lat,pageData.gps.points[0].lon],'map')
-            const alt =  drawTrack(pageData.gps.points,map)
-            drawAlt(pageData, alt)
+            pageData.map = newMap([pageData.gps.points[0].lat,pageData.gps.points[0].lon],'map')
+            pageData.alt =  drawTrack(pageData.gps.points,pageData.map)
+            drawAlt(pageData)
+
+            ini.max = pageData.gps.points.length-1
+            fin.max = pageData.gps.points.length-1
+            ini.value = Math.floor(pageData.gps.points.length / 3)
+            fin.value = Math.floor(pageData.gps.points.length / 3) * 2
+
+            drawSeg()
 
         })
 
@@ -104,19 +158,47 @@
 
     }
 
+    function drawSeg(){
+        pageData.seg = pageData.gps.points.filter((el,i)=>(i>=ini.value && i<= fin.value))
+//        pageData.alt.fill(0,0,ini.value)
+//        pageData.alt.fill(0,fin.value,pageData.alt.length)
+
+        console.log(pageData.alt.filter((el,i)=>(i>=ini.value && i<= fin.value)) )
+        drawTrack(pageData.seg, pageData.map,'seg','red',0)
+    }
+
     pageScreen.querySelector('#layer').addEventListener('click',()=>{
-        if(map.layer.name == 'sat'){
+        if(pageData.map.layer.name == 'sat'){
             pageScreen.querySelector('#layer').innerHTML = 'View Sat'
         }else{
             pageScreen.querySelector('#layer').innerHTML = 'View Map'
         }
-        setLayer(map.layer.name == 'map' ? 'sat' : 'map')
+        setLayer(pageData.map.layer.name == 'map' ? 'sat' : 'map')
     })
 
     pageScreen.querySelector('#seg').addEventListener('click',()=>{
         if(pageData.owner == '1'){
             openHTML('post_seg.html','pop-up','Novo Seguimento',pageData,600)
         }
+    })
+
+    ini.addEventListener('input',()=>{
+        ini.value = Number(ini.value) > Number(fin.value) ? fin.value : ini.value
+        try{
+            pageData.map.removeLayer(pageData.map.mark_ini);
+        }catch{null}
+        pageData.map.mark_ini = L.marker([pageData.gps.points[ini.value].lat,pageData.gps.points[ini.value].lon]).addTo(pageData.map)
+
+        drawSeg()
+    })
+
+    fin.addEventListener('input',()=>{
+        fin.value = Number(ini.value) > Number(fin.value) ? ini.value : fin.value
+        try{
+            pageData.map.removeLayer(pageData.map.mark_fin);
+        }catch{null}
+        pageData.map.mark_fin = L.marker([pageData.gps.points[fin.value].lat,pageData.gps.points[fin.value].lon]).addTo(pageData.map)
+        drawSeg()
     })
 
     pageStart()

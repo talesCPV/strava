@@ -38,7 +38,7 @@ function setMark(mp,name,i){
 
 function drawTrack(pts, mp=map, name='default', color='blue',center=1){
     const points = []
-    const alt = [['Km: ','Alt(m) ']]
+    const alt = []
 
     try{
         mp.removeLayer(mp.polyline[name])
