@@ -160,11 +160,13 @@
 
     function drawSeg(){
         pageData.seg = pageData.gps.points.filter((el,i)=>(i>=ini.value && i<= fin.value))
-//        pageData.alt.fill(0,0,ini.value)
-//        pageData.alt.fill(0,fin.value,pageData.alt.length)
+        pageData.segAlt = JSON.parse(JSON.stringify(pageData.alt))
+        pageData.segAlt.filter((el,i)=>(el.push( i < ini.value || i > fin.value ? 0 : el[1] )))
 
-        console.log(pageData.alt.filter((el,i)=>(i>=ini.value && i<= fin.value)) )
         drawTrack(pageData.seg, pageData.map,'seg','red',0)
+        try{
+            pageData.chart.draw()
+        }catch{null}
     }
 
     pageScreen.querySelector('#layer').addEventListener('click',()=>{
@@ -173,7 +175,7 @@
         }else{
             pageScreen.querySelector('#layer').innerHTML = 'View Map'
         }
-        setLayer(pageData.map.layer.name == 'map' ? 'sat' : 'map')
+        setLayer(pageData.map, pageData.map.layer.name == 'map' ? 'sat' : 'map')
     })
 
     pageScreen.querySelector('#seg').addEventListener('click',()=>{

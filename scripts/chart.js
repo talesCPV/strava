@@ -1,23 +1,18 @@
     google.charts.load('current', {'packages':['corechart']})
 
-    function drawAlt(obj,id='chart_div',range) {
+    function drawAlt(obj,id='chart_div') {
 
-        obj.alt.unshift(['Km:','Alt(m)'])
 
         google.charts.setOnLoadCallback(()=>{
             obj.chart = new Object
-            obj.chart.data = google.visualization.arrayToDataTable(obj.alt)
-
-            obj.chart.options = {
-              title: 'Altimetria',
-              width: '100%',
-              height: 200,
-              hAxis: {title: 'Km',  titleTextStyle: {color: '#333'}},
-              vAxis: {minValue: 0,baseline: 0}
-            }
-    
+               
             obj.chart.view = new google.visualization.AreaChart(document.getElementById(id))
-            obj.chart.view.draw(obj.chart.data, obj.chart.options)
+            obj.chart.draw = ()=>{
+                const data = google.visualization.arrayToDataTable([['Km:','Alt(m)','Seg.']].concat(obj.segAlt))
+                obj.chart.view.draw(data)
+            }
+
+            obj.chart.draw()
     
             google.visualization.events.addListener(obj.chart.view, 'onmouseover', function(e) {
                 try{
