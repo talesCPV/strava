@@ -171,10 +171,11 @@
 
     .line{
         display: flex;
-        justify-content: center;
+        justify-content: end;
         align-items: center;
         gap: 10px;
         text-align: center;
+        width: 100%;
     }
 
     .line button{

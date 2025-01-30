@@ -31,6 +31,13 @@
 /*            max-width: 75vw; */
         }
 
+        #seg{
+            background-color: #fbf0f0;
+            padding: 5px;
+            border-radius: 10px;
+            cursor: pointer;
+            color: #000000;
+        }
 
 
         .sliders_control {
@@ -66,6 +73,10 @@
             z-index: 1;
         }
 
+        .show-map fieldset{
+            padding: 10px;
+        }
+
 
     </style>
 
@@ -79,28 +90,36 @@
                 <img class="post-head-img" id="track-user" src="">
                 <p id="track-nome-atleta"></p>
             </div>
-            <div class="track-data">
-                <div>
-                    <p>Distância</p>
-                    <p id="track-dist"></p>
-                    <p class="track-und">Km</p>
+            <fieldset>
+                <legend>Totais</legend>
+                <div class="track-data">
+                    <div>
+                        <p>Distância</p>
+                        <p id="track-dist"></p>
+                        <p class="track-und">Km</p>
+                    </div>
+                    <div>
+                        <p>Elevação</p>
+                        <p id="track-elev"></p>
+                        <p class="track-und">m</p>
+                    </div>
+                    <div>
+                        <p>Tempo Mov.</p>
+                        <p id="track-mov"></p>
+                        <p class="track-und">h</p>
+                    </div>
+                    <div>
+                        <p>Tempo Tot.</p>
+                        <p id="track-time"></p>
+                        <p class="track-und">h</p>
+                    </div>
+                    <div>
+                        <p>Vel. Média</p>
+                        <p id="track-velmed"></p>
+                        <p class="track-und">km/h</p>
+                    </div>
                 </div>
-                <div>
-                    <p>Elevação</p>
-                    <p id="track-elev"></p>
-                    <p class="track-und">m</p>
-                </div>
-                <div>
-                    <p>Tempo Mov.</p>
-                    <p id="track-mov"></p>
-                    <p class="track-und">h</p>
-                </div>
-                <div>
-                    <p>Tempo Tot.</p>
-                    <p id="track-time"></p>
-                    <p class="track-und">h</p>
-                </div>
-            </div>
+            </fieldset>
         </div>
         <div id="layer">View Sat</div>
         <div id="map"></div>
@@ -108,10 +127,43 @@
             <input id="iniSlider" type="range" value="10" min="0"/>
             <input id="finSlider" type="range" value="20" min="0"/>
         </div>
+        <fieldset>
+            <legend>Selecionado</legend>
+            <div class="track-data">
+                <div>
+                    <p>Distância</p>
+                    <p id="track-dist-sel">0</p>
+                    <p class="track-und">Km</p>
+                </div>
+                <div>
+                    <p>Elevação</p>
+                    <p id="track-elev-sel">0</p>
+                    <p class="track-und">m</p>
+                </div>
+                <div>
+                    <p>Tempo Mov.</p>
+                    <p id="track-mov-sel">0</p>
+                    <p class="track-und">h</p>
+                </div>
+                <div>
+                    <p>Tempo Tot.</p>
+                    <p id="track-time-sel">0</p>
+                    <p class="track-und">h</p>
+                </div>
+                <div>
+                    <p>Vel. Média</p>
+                    <p id="track-velmed-sel"></p>
+                    <p class="track-und">km/h</p>
+                </div>
+                <div class="line">
+                    <p id="seg">Criar Seguimento</p>
+                </div>
+
+            </div>
+        </fieldset>        
         <div id="chart_div" style="width: 100%;"></div>
         <div class="track-seg">
             <p>Seguimentos</p>
-            <p id="seg">Novo Seguimento</p>
         </div>
     </div>
 
@@ -131,11 +183,17 @@
         pageScreen.querySelector('#track-dist').innerHTML = pageData.dist
         pageScreen.querySelector('#track-elev').innerHTML = pageData.elev
         const mov_h = Math.floor(pageData.mov_time/3600).toString().padStart(2,0)
-        const mov_m = Math.round(((pageData.mov_time/3600)%1) * 60).toString().padStart(2,0)
-        pageScreen.querySelector('#track-mov').innerHTML = mov_h+':'+mov_m
+        const mov_m = Math.floor((pageData.mov_time - (mov_h * 3600))/60).toString().padStart(2,0)
+        const mov_s = Math.floor((((pageData.mov_time - (mov_h * 3600))/60)- mov_m)*60).toString().padStart(2,0)
+
+        pageScreen.querySelector('#track-mov').innerHTML = mov_h+':'+mov_m+':'+mov_s
         const tot_h = Math.floor(pageData.time/3600).toString().padStart(2,0)
-        const tot_m = Math.round(((pageData.time/3600)%1) * 60).toString().padStart(2,0)        
-        pageScreen.querySelector('#track-time').innerHTML = tot_h+':'+tot_m
+        const tot_m = Math.floor((pageData.time - (tot_h * 3600))/60).toString().padStart(2,0)
+        const tot_s = Math.floor((((pageData.time - (tot_h * 3600))/60)- tot_m)*60).toString().padStart(2,0)
+  
+        pageScreen.querySelector('#track-time').innerHTML = tot_h+':'+tot_m+':'+tot_s
+        pageScreen.querySelector('#track-velmed').innerHTML = ((parseFloat(pageData.dist) / parseInt(pageData.mov_time))* 3600).toFixed(2)
+
         getFile(pageData.file).then((resp)=>{
             pageData.gps = JSON.parse(resp)
 
@@ -164,10 +222,51 @@
         pageData.segAlt.filter((el,i)=>(el.push( i < ini.value || i > fin.value ? 0 : el[1] )))
 
         drawTrack(pageData.seg, pageData.map,'seg','red',0)
+        drawMark()
+    }
+
+    function drawAltSeg(){
         try{
-            pageData.chart.draw()
+            var chart = new google.visualization.AreaChart(document.getElementById('chart_div'))
+            const data = google.visualization.arrayToDataTable([['Km:','Alt(m)','Seg.']].concat(pageData.segAlt))
+            chart.draw(data);
         }catch{null}
     }
+
+    function drawMark(){
+
+        try{
+            pageData.map.removeLayer(pageData.map.mark_ini)
+            pageData.map.removeLayer(pageData.map.mark_fin)
+        }catch{null}
+
+        pageData.map.mark_ini = L.marker([pageData.gps.points[ini.value].lat,pageData.gps.points[ini.value].lon]).addTo(pageData.map)
+        pageData.map.mark_fin = L.marker([pageData.gps.points[fin.value].lat,pageData.gps.points[fin.value].lon]).addTo(pageData.map)
+        segData()
+    }
+
+    function segData(){
+        const dist = (parseFloat(pageData.gps.points[fin.value].dist) - parseFloat(pageData.gps.points[ini.value].dist)).toFixed(2)
+        const elev = (parseFloat(pageData.gps.points[fin.value].acum) - parseFloat(pageData.gps.points[ini.value].acum)).toFixed(2)
+        const mov_time = pageData.gps.points[fin.value].mov_time - pageData.gps.points[ini.value].mov_time
+        const tot_time = pageData.gps.points[fin.value].time_sec - pageData.gps.points[ini.value].time_sec
+
+        pageScreen.querySelector('#track-dist-sel').innerHTML = dist
+        pageScreen.querySelector('#track-elev-sel').innerHTML = elev
+        const mov_h = Math.floor(mov_time/3600).toString().padStart(2,0)
+        const mov_m = Math.floor((mov_time - (mov_h * 3600))/60).toString().padStart(2,0)
+        const mov_s = Math.floor((((mov_time - (mov_h * 3600))/60)- mov_m)*60).toString().padStart(2,0)
+
+        pageScreen.querySelector('#track-mov-sel').innerHTML = mov_h+':'+mov_m+':'+mov_s
+        const tot_h = Math.floor(tot_time/3600).toString().padStart(2,0)
+        const tot_m = Math.floor((tot_time - (tot_h * 3600))/60).toString().padStart(2,0)
+        const tot_s = Math.floor((((tot_time - (tot_h * 3600))/60)- tot_m)*60).toString().padStart(2,0)
+
+        pageScreen.querySelector('#track-time-sel').innerHTML = tot_h+':'+tot_m+':'+tot_s
+        pageScreen.querySelector('#track-velmed-sel').innerHTML = ((parseFloat(dist) / parseInt(mov_time))* 3600).toFixed(2)
+
+    }
+
 
     pageScreen.querySelector('#layer').addEventListener('click',()=>{
         if(pageData.map.layer.name == 'sat'){
@@ -180,27 +279,28 @@
 
     pageScreen.querySelector('#seg').addEventListener('click',()=>{
         if(pageData.owner == '1'){
-            openHTML('post_seg.html','pop-up','Novo Seguimento',pageData,600)
+            alert('criar seguimento!')
         }
     })
 
     ini.addEventListener('input',()=>{
         ini.value = Number(ini.value) > Number(fin.value) ? fin.value : ini.value
-        try{
-            pageData.map.removeLayer(pageData.map.mark_ini);
-        }catch{null}
-        pageData.map.mark_ini = L.marker([pageData.gps.points[ini.value].lat,pageData.gps.points[ini.value].lon]).addTo(pageData.map)
-
+        drawMark()
         drawSeg()
     })
 
     fin.addEventListener('input',()=>{
         fin.value = Number(ini.value) > Number(fin.value) ? ini.value : fin.value
-        try{
-            pageData.map.removeLayer(pageData.map.mark_fin);
-        }catch{null}
-        pageData.map.mark_fin = L.marker([pageData.gps.points[fin.value].lat,pageData.gps.points[fin.value].lon]).addTo(pageData.map)
+        drawMark()
         drawSeg()
+    })
+
+    ini.addEventListener('change',()=>{
+        drawAltSeg()
+    })
+
+    fin.addEventListener('change',()=>{
+        drawAltSeg()
     })
 
     pageStart()
