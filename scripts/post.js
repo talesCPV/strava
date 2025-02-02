@@ -203,8 +203,6 @@ function makePost(obj){
 
 
     if(obj.tipo == 'GPX'){
-        const mov_h = Math.floor(obj.mov_time/3600).toString().padStart(2,0)
-        const mov_m = Math.round(((obj.mov_time/3600)%1) * 60).toString().padStart(2,0)
 
         const post_track = new_element('div','','post-track')
 
@@ -216,23 +214,57 @@ function makePost(obj){
         const track_data = new_element('div','','track-data')
         post_track.appendChild(track_data)
 
-        const dist = new_element('div')
+
+        const dist = new_element('div','','box-1')
         dist.appendChild(new_element('p','distância'))
-        dist.appendChild(new_element('p',obj.dist))
-        dist.appendChild(new_element('p','Km'))
+        const dist_box = new_element('div','','box-2')
+        dist.appendChild(dist_box)
+        dist_box.appendChild(new_element('p',obj.dist))
+        dist_box.appendChild(new_element('p','Km','box-1'))
         track_data.appendChild(dist)
 
-        const ele = new_element('div')
+        const ele = new_element('div','','box-1')
         ele.appendChild(new_element('p','Elevação'))
-        ele.appendChild(new_element('p',obj.elev))
-        ele.appendChild(new_element('p','m'))
+        const ele_box = new_element('div','','box-2')
+        ele.appendChild(ele_box)
+        ele_box.appendChild(new_element('p',obj.elev))
+        ele_box.appendChild(new_element('p','m','box-1'))
         track_data.appendChild(ele)        
 
-        const mov = new_element('div')
+        const mov = new_element('div','','box-1')
         mov.appendChild(new_element('p','Tempo Mov.'))
-        mov.appendChild(new_element('p',`${mov_h}:${mov_m}`))
-        mov.appendChild(new_element('p','h'))
+        const mov_box = new_element('div','','box-2')
+        mov.appendChild(mov_box)
+
+        const mov_h = Math.floor(obj.mov_time/3600).toString().padStart(2,0)
+        const mov_m = Math.floor((obj.mov_time - (mov_h * 3600))/60).toString().padStart(2,0)
+        const mov_s = Math.floor((((obj.mov_time - (mov_h * 3600))/60)- mov_m)*60).toString().padStart(2,0)
+
+        mov_box.appendChild(new_element('p',`${mov_h}:${mov_m}:${mov_s}`))
+//        mov_box.appendChild(new_element('p','h'))
         track_data.appendChild(mov)   
+
+        const mov_tot = new_element('div','','box-1')
+        mov_tot.appendChild(new_element('p','Tempo Mov.'))
+        const mov_tot_box = new_element('div','','box-2')
+        mov_tot.appendChild(mov_tot_box)
+
+        const tot_h = Math.floor(obj.time/3600).toString().padStart(2,0)
+        const tot_m = Math.floor((obj.time - (tot_h * 3600))/60).toString().padStart(2,0)
+        const tot_s = Math.floor((((obj.time - (tot_h * 3600))/60)- tot_m)*60).toString().padStart(2,0)
+
+        mov_tot_box.appendChild(new_element('p',`${tot_h}:${tot_m}:${tot_s}`))
+//        mov_box.appendChild(new_element('p','h'))
+        track_data.appendChild(mov_tot)  
+
+        const vel_med = new_element('div','','box-1')
+        vel_med.appendChild(new_element('p','Vel. Média'))
+        const vel_med_box = new_element('div','','box-2')
+        vel_med.appendChild(vel_med_box)
+        vel_med_box.appendChild(new_element('p',((parseFloat(obj.dist) / parseInt(obj.mov_time))* 3600).toFixed(2)))
+        vel_med_box.appendChild(new_element('p','km/h','box-1'))
+        track_data.appendChild(vel_med)   
+
 
         post_track.addEventListener('click',()=>{
             obj.img = img.src

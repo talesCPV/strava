@@ -11,12 +11,21 @@
         }
 
         #layer{
+            position: relative;
+            top: 30px;
+            z-index: 1000;
+            right: 10px;
             cursor: pointer;
             text-align: end;
+            font-weight: bold;
+            color: rgb(0, 0, 0);
+            -webkit-text-stroke: 1px rgb(255, 255, 255); /* width and color */
+            font-size: 1.3em;
         }
 
          #layer:hover{
-            color: blue;
+            color: rgb(0, 0, 255);
+            -webkit-text-stroke: 1px rgb(251, 255, 0); /* width and color */
          }
 
          .track-atleta{
@@ -90,36 +99,44 @@
                 <img class="post-head-img" id="track-user" src="">
                 <p id="track-nome-atleta"></p>
             </div>
-            <fieldset>
-                <legend>Totais</legend>
+            <div>
+                <legend></legend>
                 <div class="track-data">
-                    <div>
+                    <div class="box-1">
                         <p>Distância</p>
-                        <p id="track-dist"></p>
-                        <p class="track-und">Km</p>
+                        <div class="box-2">
+                            <p id="track-dist"></p>
+                            <p class="box-1">Km</p>
+                        </div>
                     </div>
-                    <div>
+                    <div class="box-1">
                         <p>Elevação</p>
-                        <p id="track-elev"></p>
-                        <p class="track-und">m</p>
+                        <div class="box-2">
+                            <p id="track-elev"></p>
+                            <p class="box-1">m</p>
+                        </div>
                     </div>
-                    <div>
+                    <div class="box-1">
                         <p>Tempo Mov.</p>
-                        <p id="track-mov"></p>
-                        <p class="track-und">h</p>
+                        <div class="box-2">
+                            <p id="track-mov"></p>
+                        </div>
                     </div>
-                    <div>
+                    <div class="box-1">
                         <p>Tempo Tot.</p>
-                        <p id="track-time"></p>
-                        <p class="track-und">h</p>
+                        <div class="box-2">
+                            <p id="track-time"></p>
+                        </div>
                     </div>
-                    <div>
+                    <div class="box-1">
                         <p>Vel. Média</p>
-                        <p id="track-velmed"></p>
-                        <p class="track-und">km/h</p>
+                        <div class="box-2">
+                            <p id="track-velmed"></p>
+                            <p class="box-1">km/h</p>
+                        </div>
                     </div>
                 </div>
-            </fieldset>
+            </div>
         </div>
         <div id="layer">View Sat</div>
         <div id="map"></div>
@@ -127,43 +144,51 @@
             <input id="iniSlider" type="range" value="10" min="0"/>
             <input id="finSlider" type="range" value="20" min="0"/>
         </div>
-        <fieldset>
-            <legend>Selecionado</legend>
+        <div>
+            <legend>Segmento</legend>
             <div class="track-data">
-                <div>
+                <div class="box-1">
                     <p>Distância</p>
-                    <p id="track-dist-sel">0</p>
-                    <p class="track-und">Km</p>
+                    <div class="box-2">
+                        <p id="track-dist-sel">0</p>
+                        <p class="box-1">Km</p>
+                    </div>
                 </div>
-                <div>
+                <div class="box-1">
                     <p>Elevação</p>
-                    <p id="track-elev-sel">0</p>
-                    <p class="track-und">m</p>
+                    <div class="box-2">
+                        <p id="track-elev-sel">0</p>
+                        <p class="box-1">m</p>
+                    </div>
                 </div>
-                <div>
+                <div class="box-1">
                     <p>Tempo Mov.</p>
-                    <p id="track-mov-sel">0</p>
-                    <p class="track-und">h</p>
+                    <div class="box-2">
+                        <p id="track-mov-sel">0</p>
+                    </div>
                 </div>
-                <div>
+                <div class="box-1">
                     <p>Tempo Tot.</p>
-                    <p id="track-time-sel">0</p>
-                    <p class="track-und">h</p>
+                    <div class="box-2">
+                        <p id="track-time-sel">0</p>
+                    </div>
                 </div>
-                <div>
+                <div class="box-1">
                     <p>Vel. Média</p>
-                    <p id="track-velmed-sel"></p>
-                    <p class="track-und">km/h</p>
+                    <div class="box-2">
+                        <p id="track-velmed-sel"></p>
+                        <p class="box-1">km/h</p>
+                    </div>
                 </div>
                 <div class="line">
                     <p id="seg">Criar Seguimento</p>
                 </div>
 
             </div>
-        </fieldset>        
+        </div>        
         <div id="chart_div" style="width: 100%;"></div>
         <div class="track-seg">
-            <p>Seguimentos</p>
+
         </div>
     </div>
 

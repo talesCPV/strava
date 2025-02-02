@@ -115,16 +115,28 @@
     gap: 25px;
 }
 
-.track-data div{
+.track-data .box-1{
+    font-size: 12px;
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+}
+
+.track-data .box-2{
+    font-size: 20px;
     display: flex;
     flex-direction: row;
     gap: 5px;
 }
-
-.track-data div p:nth-child(2){
-    font-size: 2em;
+/*
+.track-data div p:nth-child(1){
+    font-size: 12px;
 }
 
+.track-data div p:nth-child(2){
+    font-size: 20px;
+}
+*/
 .track-seg{
     display: flex;
     flex-direction: column;
