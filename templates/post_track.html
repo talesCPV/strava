@@ -306,7 +306,36 @@
 
     pageScreen.querySelector('#seg').addEventListener('click',()=>{
         if(pageData.owner == '1'){
-            alert('criar seguimento!')
+            if(confirm('Deseja criar o seguimento selecionado?')){
+                const nome =  prompt('Nome do Seguimento:')
+                if(nome){
+                    const start = Number(ini.value)
+                    const finish = Number(fin.value)
+
+                    const params = new Object;                    
+                    params.id = 0
+                    params.nome = nome
+		            params.lat_ini = pageData.gps.points[start].lat
+		            params.lon_ini = pageData.gps.points[start].lon
+		            params.lat_fin = pageData.gps.points[finish].lat
+		            params.lon_fin = pageData.gps.points[finish].lon
+		            params.dist = (Number(pageData.gps.points[finish].dist) - Number(pageData.gps.points[start].dist)).toFixed(2)
+		            params.alt = (Number(pageData.gps.points[finish].acum) - Number(pageData.gps.points[start].acum)).toFixed(2)
+                    params.segPoints = ""
+
+                    let count = 0
+                    for(let i=start; i<finish; i+=10){
+                        count++
+                        params.segPoints += `(id_seg,${count},'${pageData.gps.points[i].lat}','${pageData.gps.points[i].lon})'${i+10 < finish ? ',':';'}`
+                    }
+
+                    const myPromisse = queryDB(params,'SEG-0')
+                    myPromisse.then((resolve)=>{
+                        console.log(resolve)
+                    })
+
+                }
+            }
         }
     })
 

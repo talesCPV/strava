@@ -483,3 +483,39 @@ DELIMITER $$
         SELECT COUNT(*) AS FLW FROM tb_follow WHERE id_user = @id_call; 
 	END $$
 DELIMITER ;
+
+DROP PROCEDURE IF EXISTS sp_set_seg;
+DELIMITER $$
+	CREATE PROCEDURE sp_set_seg(
+		IN Ihash varchar(64),
+        IN Iid int(11),
+		IN Inome varchar(60),
+		IN Ilat_ini double,
+		IN Ilon_ini double,
+		IN Ilat_fin double,
+		IN Ilon_fin double,
+		IN Idist double,
+		IN Ialt double,
+        IN IsegPoints varchar(9999)
+    )
+	BEGIN
+		SET @id_call = (SELECT IFNULL(id,0) FROM tb_usuario WHERE hash COLLATE utf8_general_ci = Ihash COLLATE utf8_general_ci LIMIT 1);
+        IF(Inome="")THEN
+			DELETE FROM tb_segmento WHERE id = Iid; 
+			DELETE FROM tb_seg_points WHERE id_seg = Iid; 
+		ELSE
+-- 			INSERT INTO tb_segmento (id_owner,nome,lat_ini,lon_ini,lat_fin,lon_fin,dist,alt) 
+--             VALUES (@id_call,Inome,Ilat_ini,Ilon_ini,Ilat_fin,Ilon_fin,Idist,Ialt);
+
+			SET @id = (SELECT MAX(id) FROM tb_segmento);
+			SET @points = (SELECT REPLACE(IsegPoints,"id_seg",@id));
+
+			SET @quer = CONCAT('INSERT INTO tb_seg_points (id_seg,id_count,lat,lon) VALUES ',@points);
+-- 			PREPARE stmt1 FROM @quer;
+-- 			EXECUTE stmt1;
+			
+            SELECT @points;
+            
+        END IF;
+	END $$
+DELIMITER ;

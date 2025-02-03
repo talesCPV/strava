@@ -39,6 +39,9 @@
         /* FOLLOW */
         "FLW-0"   => 'CALL sp_follow(@hash,x01)', // id_user to follow
 
+        /* SEGUIMENTOS */
+        "SEG-0" => 'CALL sp_set_seg(@hash,x00,"x01","x02","x03","x04","x05","x06","x07","x08")', // id,nome,lat_ini,lon_ini,lat_fin,lon_fin,dist,alt,segPoints
+
     );
 
 ?>

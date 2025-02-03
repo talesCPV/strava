@@ -103,12 +103,23 @@ CREATE TABLE tb_segmento (
   id int(11) NOT NULL AUTO_INCREMENT,
   id_owner int(11) NOT NULL,
   nome varchar(60) NOT NULL,
-  data date DEFAULT NULL,
+  cadastro TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   lat_ini double DEFAULT '0',
   lon_ini double DEFAULT '0',
   lat_fin double DEFAULT '0',
   lon_fin double DEFAULT '0',
   dist double DEFAULT '0',
+  alt double DEFAULT '0',
   FOREIGN KEY (id_owner) REFERENCES tb_usuario(id),
   PRIMARY KEY (id)
+) ENGINE=MyISAM AUTO_INCREMENT=0 DEFAULT CHARSET=utf8;
+
+DROP TABLE IF EXISTS tb_seg_points;
+CREATE TABLE tb_seg_points (
+  id_seg int(11) NOT NULL,
+  id_count int(11) NOT NULL,
+  lat double NOT NULL,
+  lon double NOT NULL,
+  FOREIGN KEY (id_seg) REFERENCES tb_segmento(id),
+  PRIMARY KEY (id_seg,id_count)
 ) ENGINE=MyISAM AUTO_INCREMENT=0 DEFAULT CHARSET=utf8;
