@@ -1,4 +1,14 @@
 
+function makeIcon(color){
+
+    return new L.Icon({
+        iconUrl: `https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-${color}.png`,
+        iconSize: [25, 41],
+        iconAnchor: [12, 41],
+        popupAnchor: [1, -34]
+    })
+}
+
 function newMap(pos,id='map'){
     const map = L.map(id).setView(pos, 13)
     map.polyline = new Object
@@ -22,18 +32,13 @@ function setLayer(mp,lay='map'){
     mp.setZoom(11);
 }
 
-function setMark(mp,name,i){
-/*
-    const icon = L.icon({
-        iconUrl: 'assets/icons/bike.png',
-        iconSize:    [20, 20]
-    })
-*/
+function setMark(mp,pos,name){
+
     try{
         mp.removeLayer(mp.marker[name])
     }catch{null}
 
-    mp.marker[name] = L.marker(pos).addTo(map)
+    mp.marker[name] = L.marker(pos).addTo(mp)
 }
 
 function drawTrack(pts, mp=map, name='default', color='blue',center=1){

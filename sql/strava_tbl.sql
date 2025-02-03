@@ -51,18 +51,25 @@ CREATE TABLE tb_post (
     id int(11) NOT NULL AUTO_INCREMENT,
     id_user int(11) NOT NULL,
     id_parent int(11) DEFAULT NULL,
-    nome varchar(30) DEFAULT "",
+    nome varchar(90) DEFAULT "",
     texto varchar(512) NOT NULL DEFAULT "",
     dist double DEFAULT 0,
     mov_time int DEFAULT 0,
     time int DEFAULT 0,
     elev int DEFAULT 0,
+    lat_min double DEFAULT 0,
+    lat_max double DEFAULT 0,
+    lon_min double DEFAULT 0,
+    lon_max double DEFAULT 0,
     date_trk datetime DEFAULT NULL,
     file varchar(256) DEFAULT "",
     cadastro TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     tipo varchar(3) DEFAULT "TXT",
     PRIMARY KEY (id)
 ) ENGINE=MyISAM AUTO_INCREMENT=0 DEFAULT CHARSET=utf8;
+
+ALTER TABLE tb_post MODIFY COLUMN nome VARCHAR(90);
+ALTER TABLE tb_post ADD COLUMN lon_max double DEFAULT 0;
 
  DROP TABLE IF EXISTS tb_post_like;
 CREATE TABLE tb_post_like (

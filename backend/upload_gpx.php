@@ -57,12 +57,21 @@
         $acum = 0;
         $time = 0;
         $mov_time = 0;
+        $lat_min = 9999;
+        $lat_max = -9999;
+        $lon_min = 9999;
+        $lon_max = -9999;
+
         foreach($xml->trk->trkseg->trkpt as $trkpoint){
           $point = new stdClass();
           $point->lat = $trkpoint->attributes()->lat."";
           $point->lon = $trkpoint->attributes()->lon."";
           $point->ele = "".$trkpoint->ele;
           $hour = 0;
+          $lat_min = min($point->lat, $lat_min);
+          $lat_max = max($point->lat, $lat_max);
+          $lon_min = min($point->lon, $lon_min);
+          $lon_max = max($point->lon, $lon_max);
           try{
             $point->time = "".$trkpoint->time;
             $hour = strtotime($trkpoint->time);
@@ -110,6 +119,10 @@
         $object->acumulado =  number_format((float)$acum, 2, '.', '');
         $object->time =  timeFormat($time);
         $object->mov_time =  timeFormat($mov_time);
+        $object->lat_min =  $lat_min;
+        $object->lat_max =  $lat_max;
+        $object->lon_min =  $lon_min;
+        $object->lon_max =  $lon_max;
 
         $out = json_encode($object);
 
@@ -121,7 +134,7 @@
         $json =  $path."json/".$file;
 
         if(!file_exists($json)){          
-          setPostTrack($user_hash,$object->name,$object->distance,$mov_time,$time,$object->acumulado,$object->date,$json);
+          setPostTrack($user_hash,$object->name,$object->distance,$mov_time,$time,$object->acumulado,$object->date,$json,$lat_min,$lat_max,$lon_min,$lon_max);
         }
 
         $fp = fopen($json, "w");
@@ -132,9 +145,9 @@
     }
   }
 
-  function setPostTrack($hash,$name,$dist,$mov_time,$time,$acum,$date,$file){
+  function setPostTrack($hash,$name,$dist,$mov_time,$time,$acum,$date,$file,$lat_min,$lat_max,$lon_min,$lon_max){
 
-    $query = 'CALL sp_set_track("'. $hash .'",0,"'. $name .'","'. $dist .'",'. $mov_time .','. $time .','. $acum.',"'.$date.'","'.substr($file,strlen(getcwd()),null).'");';
+    $query = 'CALL sp_set_track("'. $hash .'",0,"'. $name .'","'. $dist .'",'. $mov_time .','. $time .','. $acum.',"'.$date.'","'.substr($file,strlen(getcwd()),null).'","'.$lat_min.'","'.$lat_max.'","'.$lon_min.'","'.$lon_max.'");';
 
     include "connect.php";
     $result = mysqli_query($conexao, $query);

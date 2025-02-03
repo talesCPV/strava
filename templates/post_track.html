@@ -232,6 +232,8 @@
             fin.value = Math.floor(pageData.gps.points.length / 3) * 2
 
             drawSeg()
+//            setMark(pageData.map,[pageData.lat_min,pageData.lon_min],'min')
+//            setMark(pageData.map,[pageData.lat_max,pageData.lon_max],'max')
 
         })
 
@@ -265,8 +267,8 @@
             pageData.map.removeLayer(pageData.map.mark_fin)
         }catch{null}
 
-        pageData.map.mark_ini = L.marker([pageData.gps.points[ini.value].lat,pageData.gps.points[ini.value].lon]).addTo(pageData.map)
-        pageData.map.mark_fin = L.marker([pageData.gps.points[fin.value].lat,pageData.gps.points[fin.value].lon]).addTo(pageData.map)
+        pageData.map.mark_ini = L.marker([pageData.gps.points[ini.value].lat,pageData.gps.points[ini.value].lon],{icon: makeIcon('green')}).addTo(pageData.map)
+        pageData.map.mark_fin = L.marker([pageData.gps.points[fin.value].lat,pageData.gps.points[fin.value].lon],{icon: makeIcon('red')}).addTo(pageData.map)
         segData()
     }
 

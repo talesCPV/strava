@@ -424,15 +424,19 @@ DELIMITER $$
         IN Itime INT,
         IN Ielev INT,
         IN Idate_trk datetime,
-        IN Ifile varchar(256)
+        IN Ifile varchar(256),
+        IN Ilat_min double,
+        IN Ilat_max double,
+        IN Ilon_min double,
+        IN Ilon_max double
     )
 	BEGIN
 		SET @id_call = (SELECT IFNULL(id,0) FROM tb_usuario WHERE hash COLLATE utf8_general_ci = Ihash COLLATE utf8_general_ci LIMIT 1);
         IF(@id_call > 0)THEN
 			IF(Inome!="")THEN
 				IF(Iid=0)THEN
-					INSERT INTO tb_post (id_user,id_parent,nome,dist,mov_time,time,elev,date_trk,tipo,file)
-					VALUES(@id_call,0,Inome,Idist,Imov_time,Itime,Ielev,Idate_trk,"GPX",Ifile);
+					INSERT INTO tb_post (id_user,id_parent,nome,dist,mov_time,time,elev,date_trk,tipo,file,lat_min,lat_max,lon_min,lon_max)
+					VALUES(@id_call,0,Inome,Idist,Imov_time,Itime,Ielev,Idate_trk,"GPX",Ifile,Ilat_min,Ilat_max,Ilon_min,Ilon_max);
 				ELSE
 					UPDATE tb_post SET dist=Idist,mov_time=Imov_time,time=Itime,elev=Ielev,date_trk=Idate_trk WHERE id=Iid;
 				END IF;
