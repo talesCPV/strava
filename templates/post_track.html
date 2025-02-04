@@ -260,16 +260,11 @@
         }catch{null}
     }
 
-    function drawMark(){
-
-        try{
-            pageData.map.removeLayer(pageData.map.mark_ini)
-            pageData.map.removeLayer(pageData.map.mark_fin)
-        }catch{null}
-
-        pageData.map.mark_ini = L.marker([pageData.gps.points[ini.value].lat,pageData.gps.points[ini.value].lon],{icon: makeIcon('green')}).addTo(pageData.map)
-        pageData.map.mark_fin = L.marker([pageData.gps.points[fin.value].lat,pageData.gps.points[fin.value].lon],{icon: makeIcon('red')}).addTo(pageData.map)
+    function drawMark(center=false,who='ini'){
+        setMark(pageData.map,[pageData.gps.points[ini.value].lat,pageData.gps.points[ini.value].lon],'ini','green', center? who=='ini' ? 1 : 0 : 0)
+        setMark(pageData.map,[pageData.gps.points[fin.value].lat,pageData.gps.points[fin.value].lon],'fin','red', center? who=='ini' ? 0 : 1 : 0)
         segData()
+
     }
 
     function segData(){
@@ -324,10 +319,11 @@
                     params.segPoints = ""
 
                     let count = 0
-                    for(let i=start; i<finish; i+=10){
+                    for(let i=start; i<finish; i+=20){
                         count++
-                        params.segPoints += `(id_seg,${count},'${pageData.gps.points[i].lat}','${pageData.gps.points[i].lon})'${i+10 < finish ? ',':';'}`
+                        params.segPoints += `(id_seg,${count},'${pageData.gps.points[i].lat}','${pageData.gps.points[i].lon}'),`
                     }
+                    params.segPoints += `(id_seg,${count+1},'${pageData.gps.points[finish].lat}','${pageData.gps.points[finish].lon}');`
 
                     const myPromisse = queryDB(params,'SEG-0')
                     myPromisse.then((resolve)=>{
@@ -341,13 +337,13 @@
 
     ini.addEventListener('input',()=>{
         ini.value = Number(ini.value) > Number(fin.value) ? fin.value : ini.value
-        drawMark()
+        drawMark(1,'ini')
         drawSeg()
     })
 
     fin.addEventListener('input',()=>{
         fin.value = Number(ini.value) > Number(fin.value) ? ini.value : fin.value
-        drawMark()
+        drawMark(1,'fin')
         drawSeg()
     })
 

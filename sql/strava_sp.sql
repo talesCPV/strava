@@ -504,18 +504,16 @@ DELIMITER $$
 			DELETE FROM tb_segmento WHERE id = Iid; 
 			DELETE FROM tb_seg_points WHERE id_seg = Iid; 
 		ELSE
--- 			INSERT INTO tb_segmento (id_owner,nome,lat_ini,lon_ini,lat_fin,lon_fin,dist,alt) 
---             VALUES (@id_call,Inome,Ilat_ini,Ilon_ini,Ilat_fin,Ilon_fin,Idist,Ialt);
+ 			INSERT INTO tb_segmento (id_owner,nome,lat_ini,lon_ini,lat_fin,lon_fin,dist,alt) 
+             VALUES (@id_call,Inome,Ilat_ini,Ilon_ini,Ilat_fin,Ilon_fin,Idist,Ialt);
 
 			SET @id = (SELECT MAX(id) FROM tb_segmento);
 			SET @points = (SELECT REPLACE(IsegPoints,"id_seg",@id));
 
 			SET @quer = CONCAT('INSERT INTO tb_seg_points (id_seg,id_count,lat,lon) VALUES ',@points);
--- 			PREPARE stmt1 FROM @quer;
--- 			EXECUTE stmt1;
-			
-            SELECT @points;
-            
+ 			PREPARE stmt1 FROM @quer;
+ 			EXECUTE stmt1;
+
         END IF;
 	END $$
 DELIMITER ;

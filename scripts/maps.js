@@ -32,13 +32,16 @@ function setLayer(mp,lay='map'){
     mp.setZoom(11);
 }
 
-function setMark(mp,pos,name){
+function setMark(mp,pos,name,color='blue',center=false){
 
     try{
         mp.removeLayer(mp.marker[name])
     }catch{null}
 
-    mp.marker[name] = L.marker(pos).addTo(mp)
+    mp.marker[name] = L.marker(pos,{icon: makeIcon(color)}).addTo(mp)
+    if(center){
+        mp.setView(new L.LatLng(pos[0],pos[1]))
+    }
 }
 
 function drawTrack(pts, mp=map, name='default', color='blue',center=1){
